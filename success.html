@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Success</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page" aria-label="Payment success">
+      <h1 class="section-title">Payment Success</h1>
+      <p class="product-price">Thanks — your order is confirmed.</p>
+      <a class="nav-link" href="/">Back to home</a>
+    </main>
+
+    <script>
+      try {
+        localStorage.removeItem("bw_cart_v1");
+      } catch {}
+    </script>
+  </body>
+</html>
+

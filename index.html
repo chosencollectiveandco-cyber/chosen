@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Merch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="top-nav" aria-label="Primary">
+        <div class="nav-left">
+          <a href="#home" class="nav-link">Home</a>
+          <a href="#apparel" class="nav-link">Apparel</a>
+        </div>
+
+        <button class="cart-button" type="button" data-action="open-cart" aria-label="Open cart">
+          <svg
+            class="cart-icon"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M7 7V6a5 5 0 0 1 10 0v1"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M6 7h12l1 14H5L6 7Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="cart-count" aria-hidden="true" hidden>0</span>
+        </button>
+      </nav>
+    </header>
+
+	    <main id="home" class="page">
+      <section id="apparel" class="merch" aria-label="Apparel">
+        <h2 class="section-title">Apparel</h2>
+
+	        <div class="product-grid" aria-label="Products">
+	          <article
+	            class="product-card"
+	            data-sku="MERCH-01"
+	            data-image="assets/chsn-t1.jpg"
+	            role="button"
+	            tabindex="0"
+	            aria-haspopup="dialog"
+	            aria-label="Open CHSN-T1 details"
+	          >
+	            <div class="product-tile">
+	              <img
+	                class="product-image"
+	                src="assets/chsn-t1.jpg"
+	                alt=""
+	                loading="lazy"
+	                decoding="async"
+	              />
+	            </div>
+	            <div class="product-meta">
+	              <p class="product-name">CHSN-T1</p>
+	              <p class="product-price">$45</p>
+	            </div>
+	          </article>
+
+	          <article
+	            class="product-card"
+	            data-sku="MERCH-02"
+	            data-image="assets/chsn-h1.jpg"
+	            role="button"
+	            tabindex="0"
+	            aria-haspopup="dialog"
+	            aria-label="Open CHSN-H1 details"
+	          >
+	            <div class="product-tile">
+	              <img
+	                class="product-image"
+	                src="assets/chsn-h1.jpg"
+	                alt=""
+	                loading="lazy"
+	                decoding="async"
+	              />
+	            </div>
+	            <div class="product-meta">
+	              <p class="product-name">CHSN-H1</p>
+	              <p class="product-price">$85</p>
+	            </div>
+	          </article>
+	        </div>
+	      </section>
+	    </main>
+
+	    <div class="modal-backdrop" data-action="close-product" hidden></div>
+	    <aside
+	      class="product-modal"
+	      role="dialog"
+	      aria-modal="true"
+	      aria-label="Product details"
+	      aria-hidden="true"
+	    >
+	      <div class="product-modal-header">
+	        <h2 class="product-modal-title" data-product-title>Product</h2>
+	        <button
+	          class="icon-button"
+	          type="button"
+	          data-action="close-product"
+	          aria-label="Close product"
+	        >
+	          <span aria-hidden="true">×</span>
+	        </button>
+	      </div>
+
+        <div class="product-modal-body">
+          <div class="product-modal-tile">
+            <img class="product-modal-image" data-product-image alt="" hidden />
+          </div>
+
+          <div class="product-modal-meta">
+            <p class="product-modal-price" data-product-price>$0</p>
+
+	          <fieldset class="size-fieldset" aria-label="Select size">
+	            <legend class="size-legend">Size</legend>
+	            <div class="size-grid" data-size-grid>
+	              <label class="size-option">
+	                <input type="radio" name="size" value="S" />
+	                <span class="size-pill">S</span>
+	              </label>
+	              <label class="size-option">
+	                <input type="radio" name="size" value="M" checked />
+	                <span class="size-pill">M</span>
+	              </label>
+	              <label class="size-option">
+	                <input type="radio" name="size" value="L" />
+	                <span class="size-pill">L</span>
+	              </label>
+	              <label class="size-option">
+	                <input type="radio" name="size" value="XL" />
+	                <span class="size-pill">XL</span>
+	              </label>
+	              <label class="size-option">
+	                <input type="radio" name="size" value="XXL" />
+	                <span class="size-pill">XXL</span>
+	              </label>
+	            </div>
+	          </fieldset>
+
+	          <div class="qty-picker" aria-label="Select quantity">
+	            <button class="qty-button" type="button" data-action="modal-dec" aria-label="Decrease quantity">
+	              −
+	            </button>
+	            <input
+	              class="qty-input"
+	              type="number"
+	              min="1"
+	              max="99"
+	              value="1"
+	              inputmode="numeric"
+	              data-qty-input
+	              aria-label="Quantity"
+	            />
+	            <button class="qty-button" type="button" data-action="modal-inc" aria-label="Increase quantity">
+	              +
+	            </button>
+	          </div>
+
+	          <button class="add-button" type="button" data-action="modal-add">Add to cart</button>
+	        </div>
+	      </div>
+	    </aside>
+
+	    <div class="backdrop" data-action="close-cart" hidden></div>
+	    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
+	      <div class="cart-header">
+	        <h2 class="cart-title">Cart</h2>
+	        <button class="icon-button" type="button" data-action="close-cart" aria-label="Close cart">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="cart-items" role="list" aria-label="Cart items"></div>
+
+      <div class="cart-footer">
+        <div class="cart-total" aria-label="Cart total">
+          <span>Total</span>
+          <span class="cart-total-value" data-cart-total>$0</span>
+        </div>
+        <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
+      </div>
+    </aside>
+  </body>
+</html>
