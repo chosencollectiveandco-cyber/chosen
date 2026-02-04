@@ -1,5 +1,5 @@
 const STORAGE_KEY = "bw_cart_v1";
-const SIZES = ["S", "M", "L", "XL", "XXL"];
+const SIZES = ["S", "M", "L", "XL", "2XL, 3XL"];
 const CART_KEY_SEPARATOR = "::";
 
 const money = new Intl.NumberFormat(undefined, {
