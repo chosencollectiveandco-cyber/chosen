@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --check server.js && node --check script.js && node --check netlify/functions/create-checkout-session.cjs"
   },
   "dependencies": {
     "dotenv": "^16.6.1",
