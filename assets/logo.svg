@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="CHSN">
+  <rect width="420" height="120" fill="#ffffff" />
+  <g fill="#000000">
+    <path d="M32 86V34h18v36h44V34h18v52H94V84H50v2H32Z" />
+    <path d="M132 86V34h18v18h44V34h18v52h-18V70h-44v16h-18Z" />
+    <path d="M232 86V34h72v16h-54v4h54v16h-54v4h54v12h-72Z" />
+    <path d="M324 86V34h18l44 28V34h18v52h-18l-44-28v28h-18Z" />
+  </g>
+</svg>
+
