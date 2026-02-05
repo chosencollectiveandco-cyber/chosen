@@ -145,7 +145,7 @@ button:focus-visible,
 .product-card {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 8px;
   justify-items: center;
   text-align: center;
   width: min(760px, 92vw);
@@ -187,7 +187,7 @@ button:focus-visible,
 
 .product-meta {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   justify-items: center;
 }
 
