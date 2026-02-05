@@ -355,6 +355,11 @@ button:focus-visible,
   letter-spacing: 0.2em;
 }
 
+.cart-item-price,
+.cart-total {
+  display: none;
+}
+
 .add-button {
   margin-top: 6px;
   border: 1px solid var(--border);

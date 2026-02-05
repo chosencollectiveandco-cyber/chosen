@@ -6,7 +6,7 @@ const SIZES = new Set(["S", "M", "L", "XL", "2XL", "3XL"]);
 const CATALOG = {
   "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePath: "assets/chsn-t1.jpg" },
   "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePath: "assets/chsn-h1.jpg" },
-  "MERCH-03": { name: "CHSN-J1", unitAmount: 4500, imagePath: "assets/chsn-j1.png" },
+  "MERCH-03": { name: "CHSN-T2", unitAmount: 4500, imagePath: "assets/chsn-t2.png" },
 };
 
 function absoluteAssetUrl(domain, assetPath) {
