@@ -5,6 +5,7 @@ const CART_KEY_SEPARATOR = "::";
 const PRODUCT_CATALOG = {
   "MERCH-01": { sku: "MERCH-01", name: "CHSN-T1", price: 45, imageSrc: "assets/chsn-t1.jpg" },
   "MERCH-02": { sku: "MERCH-02", name: "CHSN-H1", price: 85, imageSrc: "assets/chsn-h1.jpg" },
+  "MERCH-03": { sku: "MERCH-03", name: "CHSN-J1", price: 45, imageSrc: "assets/chsn-j1.png" },
 };
 
 const money = new Intl.NumberFormat(undefined, {
