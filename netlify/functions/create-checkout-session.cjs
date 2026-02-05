@@ -77,9 +77,17 @@ exports.handler = async (event) => {
       };
     }
 
+    const proto =
+      (event.headers && (event.headers["x-forwarded-proto"] || event.headers["X-Forwarded-Proto"])) || "https";
+    const host = (event.headers && (event.headers.host || event.headers.Host)) || "";
+    const inferredDomain = host ? `${proto}://${host}` : "";
+
+    // Optional: set DOMAIN in Netlify env vars to force a custom domain.
+    const DOMAIN = process.env.DOMAIN || inferredDomain;
+
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
-      const imageUrl = absoluteAssetUrl(DOMAIN, product.imagePath);
+      const imageUrl = DOMAIN ? absoluteAssetUrl(DOMAIN, product.imagePath) : "";
       return {
         price_data: {
           currency: "usd",
@@ -93,14 +101,6 @@ exports.handler = async (event) => {
         quantity: item.quantity,
       };
     });
-
-    const proto =
-      (event.headers && (event.headers["x-forwarded-proto"] || event.headers["X-Forwarded-Proto"])) || "https";
-    const host = (event.headers && (event.headers.host || event.headers.Host)) || "";
-    const inferredDomain = host ? `${proto}://${host}` : "";
-
-    // Optional: set DOMAIN in Netlify env vars to force a custom domain.
-    const DOMAIN = process.env.DOMAIN || inferredDomain;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
