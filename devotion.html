@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prayer Request Received</title>
+    <title>Devotion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -11,6 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -51,16 +52,44 @@
       </nav>
     </header>
 
+    <aside class="verse-rail" aria-label="Verse">
+      <div class="verse-mask" data-verse-mask>
+        <p class="verse-text" data-verse-text>
+          But you are a chosen people, a royal priesthood, a holy nation, God’s special possession, that you may declare
+          the praises of him who called you out of darkness into his wonderful light.
+        </p>
+      </div>
+    </aside>
+
     <main class="page">
-      <section class="home-hero" aria-label="Prayer request received">
-        <div class="home-inner">
-          <h1 class="section-title">Thank You</h1>
-          <p class="brand-description">
-            Thank you for being vulnerable with your prayer request. We will be praying for you. Selah
-          </p>
-          <a class="nav-link" href="prayer.html">Back</a>
+      <section class="devotion" aria-label="Devotion">
+        <h2 class="section-title">Devotion</h2>
+        <div class="devotion-card">
+          <p class="devotion-body">Coming soon.</p>
         </div>
       </section>
     </main>
+
+    <div class="backdrop" data-action="close-cart" hidden></div>
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
+      <div class="cart-header">
+        <h2 class="cart-title">Cart</h2>
+        <button class="icon-button" type="button" data-action="close-cart" aria-label="Close cart">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="cart-items" role="list" aria-label="Cart items"></div>
+
+      <div class="cart-footer">
+        <div class="cart-total" aria-label="Cart total">
+          <span>Total</span>
+          <span class="cart-total-value" data-cart-total>$0</span>
+        </div>
+        <button class="clear-button" type="button" data-action="clear-cart">Clear cart</button>
+        <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
+      </div>
+    </aside>
   </body>
 </html>
+

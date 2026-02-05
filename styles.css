@@ -200,6 +200,30 @@ button:focus-visible,
   padding-top: 46px;
 }
 
+.devotion {
+  scroll-margin-top: 84px;
+  display: grid;
+  justify-items: center;
+  padding-top: 46px;
+}
+
+.devotion-card {
+  width: min(760px, 92vw);
+  border: 1px solid var(--soft);
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.devotion-body {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  text-transform: none;
+}
+
 .merch {
   display: grid;
   justify-items: center;
