@@ -48,13 +48,18 @@ function normalizeCartItems(rawItems) {
 exports.handler = async (event) => {
   try {
     if (event.httpMethod !== "POST") {
-      return { statusCode: 405, body: "Method Not Allowed" };
+      return {
+        statusCode: 405,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Method Not Allowed" }),
+      };
     }
 
     const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
     if (!STRIPE_SECRET_KEY) {
       return {
         statusCode: 500,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Missing STRIPE_SECRET_KEY in Netlify environment variables." }),
       };
     }
@@ -65,7 +70,11 @@ exports.handler = async (event) => {
     const items = normalizeCartItems(body.items);
 
     if (items.length === 0) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Cart is empty." }) };
+      return {
+        statusCode: 400,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Cart is empty." }),
+      };
     }
 
     const lineItems = items.map((item) => {
@@ -85,8 +94,13 @@ exports.handler = async (event) => {
       };
     });
 
-    // Use your working live domain
-    const DOMAIN = process.env.DOMAIN || "https://www.chosencollectiveandco.com";
+    const proto =
+      (event.headers && (event.headers["x-forwarded-proto"] || event.headers["X-Forwarded-Proto"])) || "https";
+    const host = (event.headers && (event.headers.host || event.headers.Host)) || "";
+    const inferredDomain = host ? `${proto}://${host}` : "";
+
+    // Optional: set DOMAIN in Netlify env vars to force a custom domain.
+    const DOMAIN = process.env.DOMAIN || inferredDomain;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -106,6 +120,7 @@ exports.handler = async (event) => {
     console.error(err);
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Failed to create Checkout Session." }),
     };
   }

@@ -380,9 +380,11 @@ function main() {
       window.location.href = data.url;
     } catch (error) {
       console.error(error);
-      alert(
-        "Checkout failed. Make sure you’re running the server and STRIPE_SECRET_KEY is set.",
-      );
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Checkout failed. If you’re on Netlify, make sure the Netlify Function is deployed and STRIPE_SECRET_KEY is set.";
+      alert(message);
     } finally {
       if (checkoutButtonEl instanceof HTMLButtonElement) {
         checkoutButtonEl.disabled = false;
