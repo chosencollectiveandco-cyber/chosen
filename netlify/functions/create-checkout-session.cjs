@@ -56,7 +56,10 @@ exports.handler = async (event) => {
       };
     }
 
-    const checkoutEnabled = String(process.env.CHECKOUT_ENABLED ?? "true").toLowerCase() !== "false";
+    const checkoutEnabled =
+      String(process.env.CHECKOUT_ENABLED ?? "true")
+        .trim()
+        .toLowerCase() !== "false";
     if (!checkoutEnabled) {
       return {
         statusCode: 503,

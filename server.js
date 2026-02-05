@@ -113,7 +113,10 @@ app.get("/", (_req, res) => {
 
 app.post("/api/create-checkout-session", async (req, res) => {
   try {
-    const checkoutEnabled = String(process.env.CHECKOUT_ENABLED ?? "true").toLowerCase() !== "false";
+    const checkoutEnabled =
+      String(process.env.CHECKOUT_ENABLED ?? "true")
+        .trim()
+        .toLowerCase() !== "false";
     if (!checkoutEnabled) {
       return res.status(503).json({ error: "Checkout is temporarily disabled." });
     }
