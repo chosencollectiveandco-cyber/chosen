@@ -84,6 +84,16 @@ exports.handler = async (event) => {
 
     // Optional: set DOMAIN in Netlify env vars to force a custom domain.
     const DOMAIN = process.env.DOMAIN || inferredDomain;
+    if (!DOMAIN || !DOMAIN.startsWith("http")) {
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error:
+            "Missing DOMAIN. Add DOMAIN (ex: https://yourdomain.com) to Netlify environment variables so Stripe can redirect to success/cancel pages.",
+        }),
+      };
+    }
 
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
@@ -117,11 +127,21 @@ exports.handler = async (event) => {
       body: JSON.stringify({ url: session.url }),
     };
   } catch (err) {
-    console.error(err);
+    console.error("create-checkout-session error:", err);
+    const message =
+      err && typeof err.message === "string" && err.message.trim()
+        ? err.message.trim()
+        : "Failed to create Checkout Session.";
+    const type = err && typeof err.type === "string" ? err.type : undefined;
+    const code = err && typeof err.code === "string" ? err.code : undefined;
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Failed to create Checkout Session." }),
+      body: JSON.stringify({
+        error: message,
+        ...(type ? { type } : {}),
+        ...(code ? { code } : {}),
+      }),
     };
   }
 };
