@@ -160,7 +160,7 @@ button:focus-visible,
 
 .product-tile {
   aspect-ratio: 1 / 1;
-  border: 1px solid var(--soft);
+  border: 0;
   background: var(--bg);
   position: relative;
   transition: transform 0.2s ease;
@@ -280,7 +280,7 @@ body.product-open .product-modal {
 .product-modal-tile {
   aspect-ratio: 1 / 1;
   background: var(--bg);
-  border: 1px solid var(--soft);
+  border: 0;
   display: grid;
   place-items: center;
   padding: 26px;
