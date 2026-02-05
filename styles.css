@@ -375,24 +375,22 @@ button:focus-visible,
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(2px);
+  background: rgba(255, 255, 255, 0.97);
   z-index: 60;
 }
 
 .product-modal {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  width: min(980px, 92vw);
-  max-height: min(720px, 92vh);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: auto;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: transparent;
+  border: 0;
   z-index: 70;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -48%) scale(0.98);
+  transform: translateY(8px) scale(0.99);
   transition: opacity 0.2s ease, transform 0.2s ease;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -401,15 +399,18 @@ button:focus-visible,
 body.product-open .product-modal {
   opacity: 1;
   pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translateY(0) scale(1);
 }
 
 .product-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 18px 12px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 6vw 16px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 0;
 }
 
 .product-modal-title {
@@ -420,20 +421,25 @@ body.product-open .product-modal {
 }
 
 .product-modal-body {
-  padding: 18px;
+  padding: 10px 6vw 64px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) 1fr;
-  gap: 18px;
-  align-items: start;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  justify-items: center;
+  align-content: start;
 }
 
 .product-modal-tile {
-  aspect-ratio: 1 / 1;
-  background: var(--bg);
+  width: min(820px, 92vw);
+  height: min(72vh, 820px);
+  background: transparent;
   border: 0;
   display: grid;
   place-items: center;
-  padding: 26px;
+  padding: 0;
 }
 
 .product-modal-image {
@@ -447,6 +453,9 @@ body.product-open .product-modal {
   display: grid;
   gap: 14px;
   align-content: start;
+  justify-items: center;
+  text-align: center;
+  width: min(520px, 92vw);
 }
 
 .product-modal-price {
