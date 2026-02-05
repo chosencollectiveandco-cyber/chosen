@@ -113,6 +113,11 @@ app.get("/", (_req, res) => {
 
 app.post("/api/create-checkout-session", async (req, res) => {
   try {
+    const checkoutEnabled = String(process.env.CHECKOUT_ENABLED ?? "true").toLowerCase() !== "false";
+    if (!checkoutEnabled) {
+      return res.status(503).json({ error: "Checkout is temporarily disabled." });
+    }
+
     const items = normalizeCartItems(req.body?.items);
     if (items.length === 0) {
       return res.status(400).json({ error: "Cart is empty." });

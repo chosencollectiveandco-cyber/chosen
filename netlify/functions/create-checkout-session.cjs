@@ -56,6 +56,15 @@ exports.handler = async (event) => {
       };
     }
 
+    const checkoutEnabled = String(process.env.CHECKOUT_ENABLED ?? "true").toLowerCase() !== "false";
+    if (!checkoutEnabled) {
+      return {
+        statusCode: 503,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Checkout is temporarily disabled." }),
+      };
+    }
+
     const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
     if (!STRIPE_SECRET_KEY) {
       return {
