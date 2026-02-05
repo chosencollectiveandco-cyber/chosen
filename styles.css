@@ -514,17 +514,21 @@ body.product-open .product-modal {
 .size-pill {
   display: grid;
   place-items: center;
-  border: 1px solid var(--border);
-  padding: 10px 8px;
-  font-size: 0.72rem;
+  border: 0;
+  background: transparent;
+  padding: 10px 2px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: opacity 0.2s ease;
+  opacity: 0.55;
 }
 
 .size-option input:checked + .size-pill {
-  background: var(--ink);
-  color: var(--bg);
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
 }
 
 .size-option input:focus-visible + .size-pill {
