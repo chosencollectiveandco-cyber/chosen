@@ -1,5 +1,5 @@
 const STORAGE_KEY = "bw_cart_v1";
-const SIZES = ["S", "M", "L", "XL", "XXL"];
+const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
 
 const money = new Intl.NumberFormat(undefined, {
@@ -149,15 +149,29 @@ function renderCart({ cartItemsEl, cartTotalEl, cart }, products) {
     const top = document.createElement("div");
     top.className = "cart-item-top";
 
+    const left = document.createElement("div");
+    left.className = "cart-item-left";
+
+    if (product.imageSrc) {
+      const img = document.createElement("img");
+      img.className = "cart-item-image";
+      img.src = product.imageSrc;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      left.appendChild(img);
+    }
+
     const name = document.createElement("p");
     name.className = "cart-item-name";
     name.textContent = `${product.name} / ${parsed.size}`;
+    left.appendChild(name);
 
     const price = document.createElement("p");
     price.className = "cart-item-price";
     price.textContent = money.format(product.price);
 
-    top.append(name, price);
+    top.append(left, price);
 
     const controls = document.createElement("div");
     controls.className = "qty-controls";
@@ -397,6 +411,11 @@ function main() {
 
     if (action === "close-product") {
       closeProductModal();
+      return;
+    }
+
+    if (action === "clear-cart") {
+      setCart({});
       return;
     }
 

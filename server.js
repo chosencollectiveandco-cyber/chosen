@@ -16,16 +16,27 @@ if (!STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-const SIZES = new Set(["S", "M", "L", "XL", "XXL"]);
+const SIZES = new Set(["S", "M", "L", "XL", "2XL", "3XL"]);
 
 const AUTO_FREE_PROMO_CODE =
   (process.env.AUTO_FREE_PROMO_CODE || (STRIPE_SECRET_KEY.startsWith("sk_test_") ? "FREE100" : "")).trim() ||
   "";
 
 const CATALOG = {
-  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500 },
-  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500 },
+  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePath: "assets/chsn-t1.jpg" },
+  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePath: "assets/chsn-h1.jpg" },
 };
+
+function absoluteAssetUrl(assetPath) {
+  const cleaned = String(assetPath || "").replace(/^\/+/, "");
+  if (!cleaned) return "";
+  const base = DOMAIN.endsWith("/") ? DOMAIN : `${DOMAIN}/`;
+  try {
+    return new URL(cleaned, base).toString();
+  } catch {
+    return "";
+  }
+}
 
 function clampInt(value, { min, max }) {
   const int = Math.floor(Number(value));
@@ -110,6 +121,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
+      const imageUrl = absoluteAssetUrl(product.imagePath);
 
       return {
         price_data: {
@@ -118,6 +130,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
           product_data: {
             name: product.name,
             description: `Size: ${item.size}`,
+            ...(imageUrl ? { images: [imageUrl] } : {}),
           },
         },
         quantity: item.quantity,
