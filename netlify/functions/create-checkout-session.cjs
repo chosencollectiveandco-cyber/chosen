@@ -1,6 +1,6 @@
 const Stripe = require("stripe");
 
-const SIZES = new Set(["S", "M", "L", "XL", "XXL"]);
+const SIZES = new Set(["S", "M", "L", "XL", "2XL,"]);
 
 // Product catalog (prices in cents)
 const CATALOG = {

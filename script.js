@@ -1,5 +1,5 @@
 const STORAGE_KEY = "bw_cart_v1";
-const SIZES = ["S", "M", "L", "XL", "2XL, 3XL"];
+const SIZES = ["S", "M", "L", "XL", "XXL"];
 const CART_KEY_SEPARATOR = "::";
 
 const money = new Intl.NumberFormat(undefined, {
@@ -232,6 +232,8 @@ function main() {
   ) {
     return;
   }
+
+  initVerseReveal();
 
   let cart = sanitizeCart(loadCart(), products);
   saveCart(cart);
@@ -481,6 +483,38 @@ function main() {
       closeCart();
     }
   });
+}
+
+function initVerseReveal() {
+  const mask = document.querySelector("[data-verse-mask]");
+  const text = document.querySelector("[data-verse-text]");
+  if (!mask || !text) return;
+
+  let raf = 0;
+
+  function apply() {
+    const verseHeight = text.scrollHeight || 0;
+    if (verseHeight <= 0) return;
+
+    const scrollMax = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const t = scrollMax === 0 ? 1 : Math.min(1, Math.max(0, window.scrollY / scrollMax));
+
+    const minReveal = Math.min(72, verseHeight);
+    const reveal = Math.round(minReveal + (verseHeight - minReveal) * t);
+    mask.style.maxHeight = `${reveal}px`;
+  }
+
+  function schedule() {
+    if (raf) return;
+    raf = window.requestAnimationFrame(() => {
+      raf = 0;
+      apply();
+    });
+  }
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule, { passive: true });
+  apply();
 }
 
 main();
