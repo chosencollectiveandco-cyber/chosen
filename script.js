@@ -448,6 +448,8 @@ function main() {
       const sku = productModalEl.dataset.sku;
       if (!sku || !products.has(sku)) return;
 
+      if (actionEl instanceof HTMLButtonElement && actionEl.disabled) return;
+
       const selectedSize = productModalEl.querySelector('input[name="size"]:checked')?.value || "";
       if (!SIZES.includes(selectedSize)) return;
 

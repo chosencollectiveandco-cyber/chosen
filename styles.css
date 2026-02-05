@@ -377,6 +377,16 @@ button:focus-visible,
   color: var(--ink);
 }
 
+.add-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.add-button:disabled:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
