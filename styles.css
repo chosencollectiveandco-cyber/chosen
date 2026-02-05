@@ -193,6 +193,13 @@ button:focus-visible,
   scroll-margin-top: 84px;
 }
 
+.prayer {
+  scroll-margin-top: 84px;
+  display: grid;
+  justify-items: center;
+  padding-top: 46px;
+}
+
 .merch {
   display: grid;
   justify-items: center;
@@ -210,6 +217,79 @@ button:focus-visible,
   grid-template-columns: 1fr;
   gap: 22px;
   justify-items: center;
+}
+
+.prayer-form {
+  width: min(760px, 92vw);
+  display: grid;
+  gap: 14px;
+}
+
+.form-hidden {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 12px 12px;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.form-input:focus-visible,
+.form-textarea:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.form-note {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-transform: none;
+}
+
+.prayer-button {
+  border: 1px solid var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 14px;
+  font-weight: 600;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.prayer-button:hover {
+  background: var(--bg);
+  color: var(--ink);
 }
 
 .product-card {

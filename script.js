@@ -2,6 +2,11 @@ const STORAGE_KEY = "bw_cart_v1";
 const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
 
+const PRODUCT_CATALOG = {
+  "MERCH-01": { sku: "MERCH-01", name: "CHSN-T1", price: 45, imageSrc: "assets/chsn-t1.jpg" },
+  "MERCH-02": { sku: "MERCH-02", name: "CHSN-H1", price: 85, imageSrc: "assets/chsn-h1.jpg" },
+};
+
 const money = new Intl.NumberFormat(undefined, {
   style: "currency",
   currency: "USD",
@@ -55,7 +60,7 @@ function parsePrice(text) {
 
 function getProductsFromDom() {
   const cards = Array.from(document.querySelectorAll(".product-card"));
-  const products = new Map();
+  const products = new Map(Object.values(PRODUCT_CATALOG).map((product) => [product.sku, product]));
 
   for (const card of cards) {
     const sku = (card.dataset.sku || "").trim();
@@ -214,6 +219,8 @@ function renderCart({ cartItemsEl, cartTotalEl, cart }, products) {
 }
 
 function main() {
+  initVerseReveal();
+
   const products = getProductsFromDom();
 
   const cartCountEl = document.querySelector(".cart-count");
@@ -230,32 +237,25 @@ function main() {
   const sizeGridEl = document.querySelector("[data-size-grid]");
   const qtyInputEl = document.querySelector("[data-qty-input]");
 
-  if (
-    !cartCountEl ||
-    !cartDrawerEl ||
-    !backdropEl ||
-    !cartItemsEl ||
-    !cartTotalEl ||
-    !productModalEl ||
-    !productBackdropEl ||
-    !productTitleEl ||
-    !productPriceEl ||
-    !productImageEl ||
-    !sizeGridEl ||
-    !qtyInputEl
-  ) {
-    return;
-  }
+  const hasCartUi = Boolean(cartCountEl && cartDrawerEl && backdropEl && cartItemsEl && cartTotalEl);
+  const hasProductModalUi = Boolean(
+    productModalEl &&
+      productBackdropEl &&
+      productTitleEl &&
+      productPriceEl &&
+      productImageEl &&
+      sizeGridEl &&
+      qtyInputEl,
+  );
 
-  initVerseReveal();
-
-  let cart = sanitizeCart(loadCart(), products);
-  saveCart(cart);
+  let cart = hasCartUi ? sanitizeCart(loadCart(), products) : loadCart();
+  if (hasCartUi) saveCart(cart);
 
   let lastCartFocus = null;
   let lastProductFocus = null;
 
   function openCart() {
+    if (!hasCartUi) return;
     closeProductModal({ restoreFocus: false });
     lastCartFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     document.body.classList.add("cart-open");
@@ -265,6 +265,7 @@ function main() {
   }
 
   function closeCart({ restoreFocus = true } = {}) {
+    if (!hasCartUi) return;
     document.body.classList.remove("cart-open");
     cartDrawerEl.setAttribute("aria-hidden", "true");
     backdropEl.hidden = true;
@@ -272,6 +273,7 @@ function main() {
   }
 
   function openProductModal(sku) {
+    if (!hasProductModalUi) return;
     const product = products.get(sku);
     if (!product) return;
 
@@ -309,6 +311,7 @@ function main() {
   }
 
   function closeProductModal({ restoreFocus = true } = {}) {
+    if (!hasProductModalUi) return;
     if (!document.body.classList.contains("product-open")) return;
 
     document.body.classList.remove("product-open");
@@ -325,6 +328,7 @@ function main() {
   }
 
   function setCart(next) {
+    if (!hasCartUi) return;
     cart = sanitizeCart(next, products);
     saveCart(cart);
 
@@ -332,9 +336,12 @@ function main() {
     renderCart({ cartItemsEl, cartTotalEl, cart }, products);
   }
 
-  setCart(cart);
+  if (hasCartUi) {
+    setCart(cart);
+  }
 
   async function startCheckout(checkoutButtonEl) {
+    if (!hasCartUi) return;
     const items = Object.entries(cart)
       .map(([key, quantity]) => {
         const parsed = parseCartKey(key);
@@ -389,7 +396,7 @@ function main() {
     const productCard = event.target instanceof Element ? event.target.closest(".product-card") : null;
     const actionEl = event.target instanceof Element ? event.target.closest("[data-action]") : null;
     if (!actionEl) {
-      if (productCard) {
+      if (productCard && hasProductModalUi) {
         const sku = productCard.dataset.sku;
         if (sku) openProductModal(sku);
       }
@@ -425,6 +432,7 @@ function main() {
     }
 
     if (action === "modal-inc" || action === "modal-dec") {
+      if (!hasProductModalUi) return;
       const current = clampInt(qtyInputEl.value, { min: 1, max: 99 });
       const nextQty = clampInt(current + (action === "modal-inc" ? 1 : -1), { min: 1, max: 99 });
       qtyInputEl.value = String(nextQty);
@@ -433,6 +441,7 @@ function main() {
     }
 
     if (action === "modal-add") {
+      if (!hasProductModalUi) return;
       const sku = productModalEl.dataset.sku;
       if (!sku || !products.has(sku)) return;
 
@@ -474,6 +483,7 @@ function main() {
   });
 
   document.addEventListener("keydown", (event) => {
+    if (!hasProductModalUi) return;
     if (event.key === "Enter" || event.key === " ") {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -486,19 +496,21 @@ function main() {
     }
   });
 
-  qtyInputEl.addEventListener("change", () => {
-    qtyInputEl.value = String(clampInt(qtyInputEl.value, { min: 1, max: 99 }));
-  });
+  if (hasProductModalUi) {
+    qtyInputEl.addEventListener("change", () => {
+      qtyInputEl.value = String(clampInt(qtyInputEl.value, { min: 1, max: 99 }));
+    });
+  }
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
 
-    if (document.body.classList.contains("product-open")) {
+    if (hasProductModalUi && document.body.classList.contains("product-open")) {
       closeProductModal();
       return;
     }
 
-    if (document.body.classList.contains("cart-open")) {
+    if (hasCartUi && document.body.classList.contains("cart-open")) {
       closeCart();
     }
   });

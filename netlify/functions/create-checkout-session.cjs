@@ -1,12 +1,23 @@
 const Stripe = require("stripe");
 
-const SIZES = new Set(["S", "M", "L", "XL", "2XL,"]);
+const SIZES = new Set(["S", "M", "L", "XL", "2XL", "3XL"]);
 
 // Product catalog (prices in cents)
 const CATALOG = {
-  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500 },
-  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500 },
+  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePath: "assets/chsn-t1.jpg" },
+  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePath: "assets/chsn-h1.jpg" },
 };
+
+function absoluteAssetUrl(domain, assetPath) {
+  const cleaned = String(assetPath || "").replace(/^\/+/, "");
+  if (!cleaned) return "";
+  const base = domain.endsWith("/") ? domain : `${domain}/`;
+  try {
+    return new URL(cleaned, base).toString();
+  } catch {
+    return "";
+  }
+}
 
 function clampInt(value, { min, max }) {
   const int = Math.floor(Number(value));
@@ -59,6 +70,7 @@ exports.handler = async (event) => {
 
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
+      const imageUrl = absoluteAssetUrl(DOMAIN, product.imagePath);
       return {
         price_data: {
           currency: "usd",
@@ -66,6 +78,7 @@ exports.handler = async (event) => {
           product_data: {
             name: product.name,
             description: `Size: ${item.size}`,
+            ...(imageUrl ? { images: [imageUrl] } : {}),
           },
         },
         quantity: item.quantity,
