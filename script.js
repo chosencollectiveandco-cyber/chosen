@@ -1,6 +1,7 @@
 const STORAGE_KEY = "bw_cart_v1";
 const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
+const NEWSLETTER_STORAGE_KEY = "ccco_newsletter_prompt_v1";
 
 const PRODUCT_CATALOG = {
   "MERCH-01": {
@@ -250,6 +251,11 @@ function main() {
   const cartItemsEl = document.querySelector(".cart-items");
   const cartTotalEl = document.querySelector("[data-cart-total]");
 
+  const newsletterModalEl = document.querySelector(".newsletter-modal");
+  const newsletterBackdropEl = document.querySelector(".newsletter-backdrop");
+  const newsletterEmailEl = document.querySelector("#newsletter-email");
+  const newsletterFormEl = document.querySelector('form[name="email-updates"]');
+
   const productModalEl = document.querySelector(".product-modal");
   const productBackdropEl = document.querySelector(".modal-backdrop");
   const productTitleEl = document.querySelector("[data-product-title]");
@@ -260,6 +266,7 @@ function main() {
   const qtyInputEl = document.querySelector("[data-qty-input]");
 
   const hasCartUi = Boolean(cartCountEl && cartDrawerEl && backdropEl && cartItemsEl && cartTotalEl);
+  const hasNewsletterUi = Boolean(newsletterModalEl && newsletterBackdropEl && newsletterEmailEl && newsletterFormEl);
   const hasProductModalUi = Boolean(
     productModalEl &&
       productBackdropEl &&
@@ -270,6 +277,47 @@ function main() {
       sizeGridEl &&
       qtyInputEl,
   );
+
+  function openNewsletter() {
+    if (!hasNewsletterUi) return;
+    if (document.body.classList.contains("cart-open")) return;
+    if (document.body.classList.contains("product-open")) return;
+    document.body.classList.add("newsletter-open");
+    newsletterBackdropEl.hidden = false;
+    newsletterModalEl.setAttribute("aria-hidden", "false");
+    newsletterEmailEl.focus();
+  }
+
+  function closeNewsletter({ remember = true } = {}) {
+    if (!hasNewsletterUi) return;
+    document.body.classList.remove("newsletter-open");
+    newsletterBackdropEl.hidden = true;
+    newsletterModalEl.setAttribute("aria-hidden", "true");
+    if (remember) localStorage.setItem(NEWSLETTER_STORAGE_KEY, "dismissed");
+  }
+
+  if (hasNewsletterUi) {
+    newsletterModalEl.setAttribute("aria-hidden", "true");
+    newsletterBackdropEl.hidden = true;
+
+    newsletterFormEl.addEventListener("submit", () => {
+      localStorage.setItem(NEWSLETTER_STORAGE_KEY, "submitted");
+    });
+
+    const state = localStorage.getItem(NEWSLETTER_STORAGE_KEY);
+    const isHome =
+      location.pathname.endsWith("/") ||
+      location.pathname.endsWith("/index.html") ||
+      location.pathname.endsWith("index.html") ||
+      location.pathname === "";
+
+    if (!state && isHome) {
+      window.setTimeout(() => {
+        const stillOk = !localStorage.getItem(NEWSLETTER_STORAGE_KEY);
+        if (stillOk) openNewsletter();
+      }, 2500);
+    }
+  }
 
   let cart = hasCartUi ? sanitizeCart(loadCart(), products) : loadCart();
   if (hasCartUi) saveCart(cart);
@@ -443,6 +491,11 @@ function main() {
     const action = actionEl.dataset.action;
     if (!action) return;
 
+    if (action === "close-newsletter") {
+      closeNewsletter();
+      return;
+    }
+
     if (action === "open-cart") {
       openCart();
       return;
@@ -572,6 +625,11 @@ function main() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
+
+    if (hasNewsletterUi && document.body.classList.contains("newsletter-open")) {
+      closeNewsletter();
+      return;
+    }
 
     if (hasProductModalUi && document.body.classList.contains("product-open")) {
       closeProductModal();

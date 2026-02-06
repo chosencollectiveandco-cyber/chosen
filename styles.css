@@ -315,6 +315,131 @@ button:focus-visible,
   color: var(--ink);
 }
 
+.newsletter-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 90;
+}
+
+.newsletter-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(520px, 92vw);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -48%) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  padding: 18px 18px 20px;
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+body.newsletter-open .newsletter-modal {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+body.newsletter-open {
+  overflow: hidden;
+}
+
+.newsletter-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.2s ease;
+}
+
+.newsletter-close:hover {
+  opacity: 0.55;
+}
+
+.newsletter-title {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.newsletter-copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+  text-transform: none;
+}
+
+.newsletter-form {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+
+.newsletter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.newsletter-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 12px 12px;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+}
+
+.newsletter-input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.newsletter-button {
+  border: 1px solid var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 14px;
+  font-weight: 600;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.newsletter-button:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.newsletter-fine {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  text-transform: none;
+}
+
 .product-card {
   display: grid;
   grid-template-columns: 1fr;

@@ -278,5 +278,44 @@
         <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
       </div>
     </aside>
+
+    <div class="newsletter-backdrop" data-action="close-newsletter" hidden></div>
+    <aside class="newsletter-modal" role="dialog" aria-modal="true" aria-label="Join" aria-hidden="true">
+      <button class="newsletter-close" type="button" data-action="close-newsletter" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h2 class="newsletter-title">Be First</h2>
+      <p class="newsletter-copy">Enter your email for first access to drops.</p>
+
+      <form
+        class="newsletter-form"
+        name="email-updates"
+        method="POST"
+        action="updates-success.html"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+      >
+        <input type="hidden" name="form-name" value="email-updates" />
+        <p class="form-hidden">
+          <label>
+            Don’t fill this out: <input name="bot-field" />
+          </label>
+        </p>
+
+        <label class="newsletter-label" for="newsletter-email">Email</label>
+        <input
+          class="newsletter-input"
+          id="newsletter-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          required
+        />
+        <button class="newsletter-button" type="submit">Join</button>
+      </form>
+
+      <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+    </aside>
   </body>
 </html>
