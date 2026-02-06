@@ -259,8 +259,8 @@
 	    </aside>
 
 	    <div class="backdrop" data-action="close-cart" hidden></div>
-	    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
-	      <div class="cart-header">
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
+      <div class="cart-header">
 	        <h2 class="cart-title">Cart</h2>
 	        <button class="icon-button" type="button" data-action="close-cart" aria-label="Close cart">
           <span aria-hidden="true">×</span>
@@ -279,43 +279,48 @@
       </div>
     </aside>
 
-    <div class="newsletter-backdrop" data-action="close-newsletter" hidden></div>
-    <aside class="newsletter-modal" role="dialog" aria-modal="true" aria-label="Join" aria-hidden="true">
-      <button class="newsletter-close" type="button" data-action="close-newsletter" aria-label="Close">
-        <span aria-hidden="true">×</span>
-      </button>
-      <h2 class="newsletter-title">Be First</h2>
-      <p class="newsletter-copy">Enter your email for first access to drops.</p>
+    <aside class="newsletter-rail" aria-label="Email updates">
+      <div class="newsletter-rail-inner">
+        <button class="newsletter-rail-close" type="button" data-action="hide-newsletter" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h2 class="newsletter-title">Be First</h2>
+        <p class="newsletter-copy">Enter your email for first access to drops.</p>
 
-      <form
-        class="newsletter-form"
-        name="chosen-updates"
-        method="POST"
-        action="updates-success.html"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-      >
-        <input type="hidden" name="form-name" value="chosen-updates" />
-        <p class="form-hidden">
-          <label>
-            Don’t fill this out: <input name="bot-field" />
-          </label>
-        </p>
+        <form
+          class="newsletter-form"
+          name="chosen-updates"
+          method="POST"
+          action="updates-success.html"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+        >
+          <input type="hidden" name="form-name" value="chosen-updates" />
+          <p class="form-hidden">
+            <label>
+              Don’t fill this out: <input name="bot-field" />
+            </label>
+          </p>
 
-        <label class="newsletter-label" for="newsletter-email">Email</label>
-        <input
-          class="newsletter-input"
-          id="newsletter-email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          inputmode="email"
-          required
-        />
-        <button class="newsletter-button" type="submit">Join</button>
-      </form>
+          <label class="newsletter-label" for="newsletter-email">Email</label>
+          <input
+            class="newsletter-input"
+            id="newsletter-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            required
+          />
+          <button class="newsletter-button" type="submit">Join</button>
+        </form>
 
-      <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+        <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+      </div>
     </aside>
+
+    <button class="newsletter-toggle" type="button" data-action="show-newsletter" aria-label="Open email updates">
+      Updates
+    </button>
   </body>
 </html>

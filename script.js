@@ -1,7 +1,7 @@
 const STORAGE_KEY = "bw_cart_v1";
 const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
-const NEWSLETTER_STORAGE_KEY = "ccco_newsletter_prompt_v1";
+const NEWSLETTER_RAIL_STORAGE_KEY = "ccco_newsletter_rail_hidden_v1";
 
 const PRODUCT_CATALOG = {
   "MERCH-01": {
@@ -251,10 +251,9 @@ function main() {
   const cartItemsEl = document.querySelector(".cart-items");
   const cartTotalEl = document.querySelector("[data-cart-total]");
 
-  const newsletterModalEl = document.querySelector(".newsletter-modal");
-  const newsletterBackdropEl = document.querySelector(".newsletter-backdrop");
+  const newsletterRailEl = document.querySelector(".newsletter-rail");
+  const newsletterToggleEl = document.querySelector(".newsletter-toggle");
   const newsletterEmailEl = document.querySelector("#newsletter-email");
-  const newsletterFormEl = document.querySelector('form[name="chosen-updates"]');
 
   const productModalEl = document.querySelector(".product-modal");
   const productBackdropEl = document.querySelector(".modal-backdrop");
@@ -266,7 +265,7 @@ function main() {
   const qtyInputEl = document.querySelector("[data-qty-input]");
 
   const hasCartUi = Boolean(cartCountEl && cartDrawerEl && backdropEl && cartItemsEl && cartTotalEl);
-  const hasNewsletterUi = Boolean(newsletterModalEl && newsletterBackdropEl && newsletterEmailEl && newsletterFormEl);
+  const hasNewsletterRailUi = Boolean(newsletterRailEl && newsletterToggleEl && newsletterEmailEl);
   const hasProductModalUi = Boolean(
     productModalEl &&
       productBackdropEl &&
@@ -278,44 +277,22 @@ function main() {
       qtyInputEl,
   );
 
-  function openNewsletter() {
-    if (!hasNewsletterUi) return;
-    if (document.body.classList.contains("cart-open")) return;
-    if (document.body.classList.contains("product-open")) return;
-    document.body.classList.add("newsletter-open");
-    newsletterBackdropEl.hidden = false;
-    newsletterModalEl.setAttribute("aria-hidden", "false");
+  function hideNewsletterRail() {
+    if (!hasNewsletterRailUi) return;
+    document.body.classList.add("newsletter-hidden");
+    localStorage.setItem(NEWSLETTER_RAIL_STORAGE_KEY, "1");
+  }
+
+  function showNewsletterRail() {
+    if (!hasNewsletterRailUi) return;
+    document.body.classList.remove("newsletter-hidden");
+    localStorage.removeItem(NEWSLETTER_RAIL_STORAGE_KEY);
     newsletterEmailEl.focus();
   }
 
-  function closeNewsletter({ remember = true } = {}) {
-    if (!hasNewsletterUi) return;
-    document.body.classList.remove("newsletter-open");
-    newsletterBackdropEl.hidden = true;
-    newsletterModalEl.setAttribute("aria-hidden", "true");
-    if (remember) localStorage.setItem(NEWSLETTER_STORAGE_KEY, "dismissed");
-  }
-
-  if (hasNewsletterUi) {
-    newsletterModalEl.setAttribute("aria-hidden", "true");
-    newsletterBackdropEl.hidden = true;
-
-    newsletterFormEl.addEventListener("submit", () => {
-      localStorage.setItem(NEWSLETTER_STORAGE_KEY, "submitted");
-    });
-
-    const state = localStorage.getItem(NEWSLETTER_STORAGE_KEY);
-    const isHome =
-      location.pathname.endsWith("/") ||
-      location.pathname.endsWith("/index.html") ||
-      location.pathname.endsWith("index.html") ||
-      location.pathname === "";
-
-    if (!state && isHome) {
-      window.setTimeout(() => {
-        const stillOk = !localStorage.getItem(NEWSLETTER_STORAGE_KEY);
-        if (stillOk) openNewsletter();
-      }, 2500);
+  if (hasNewsletterRailUi) {
+    if (localStorage.getItem(NEWSLETTER_RAIL_STORAGE_KEY) === "1") {
+      document.body.classList.add("newsletter-hidden");
     }
   }
 
@@ -491,8 +468,13 @@ function main() {
     const action = actionEl.dataset.action;
     if (!action) return;
 
-    if (action === "close-newsletter") {
-      closeNewsletter();
+    if (action === "hide-newsletter") {
+      hideNewsletterRail();
+      return;
+    }
+
+    if (action === "show-newsletter") {
+      showNewsletterRail();
       return;
     }
 
@@ -625,11 +607,6 @@ function main() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-
-    if (hasNewsletterUi && document.body.classList.contains("newsletter-open")) {
-      closeNewsletter();
-      return;
-    }
 
     if (hasProductModalUi && document.body.classList.contains("product-open")) {
       closeProductModal();

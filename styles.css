@@ -25,6 +25,12 @@ body {
   text-transform: uppercase;
   --verse-rail-width: clamp(56px, 7vw, 86px);
   padding-left: var(--verse-rail-width);
+  --newsletter-rail-width: clamp(220px, 24vw, 320px);
+  padding-right: var(--newsletter-rail-width);
+}
+
+body.newsletter-hidden {
+  padding-right: 0;
 }
 
 a,
@@ -315,45 +321,35 @@ button:focus-visible,
   color: var(--ink);
 }
 
-.newsletter-backdrop {
+.newsletter-rail {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 90;
-}
-
-.newsletter-modal {
-  position: fixed;
-  left: 50%;
+  right: 0;
   top: 50%;
-  width: min(520px, 92vw);
+  transform: translateY(-50%);
+  width: var(--newsletter-rail-width);
   background: var(--bg);
-  border: 1px solid var(--border);
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -48%) scale(0.98);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  padding: 18px 18px 20px;
+  border-left: 1px solid var(--soft);
+  z-index: 8;
+  padding: 18px 16px;
   display: grid;
   gap: 12px;
-  text-align: center;
+  text-align: left;
 }
 
-body.newsletter-open .newsletter-modal {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
+body.newsletter-hidden .newsletter-rail {
+  display: none;
 }
 
-body.newsletter-open {
-  overflow: hidden;
+.newsletter-rail-inner {
+  position: relative;
+  display: grid;
+  gap: 12px;
 }
 
-.newsletter-close {
+.newsletter-rail-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -6px;
+  right: -6px;
   border: 0;
   background: transparent;
   font: inherit;
@@ -365,8 +361,33 @@ body.newsletter-open {
   transition: opacity 0.2s ease;
 }
 
-.newsletter-close:hover {
+.newsletter-rail-close:hover {
   opacity: 0.55;
+}
+
+.newsletter-toggle {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9;
+  border: 1px solid var(--border);
+  border-right: 0;
+  background: var(--bg);
+  padding: 12px 12px;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  display: none;
+}
+
+body.newsletter-hidden .newsletter-toggle {
+  display: block;
+}
+
+.newsletter-toggle:hover {
+  opacity: 0.6;
 }
 
 .newsletter-title {
@@ -946,10 +967,24 @@ body.product-open {
 @media (max-width: 600px) {
   body {
     padding-left: 0;
+    padding-right: 0;
   }
 
   .verse-rail {
     display: none;
+  }
+
+  .newsletter-rail {
+    position: static;
+    transform: none;
+    width: min(760px, 92vw);
+    margin: 28px auto 0;
+    border-left: 0;
+    border: 1px solid var(--soft);
+  }
+
+  .newsletter-toggle {
+    display: none !important;
   }
 
   .product-card {
