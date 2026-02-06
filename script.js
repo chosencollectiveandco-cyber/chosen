@@ -254,7 +254,7 @@ function main() {
   const newsletterModalEl = document.querySelector(".newsletter-modal");
   const newsletterBackdropEl = document.querySelector(".newsletter-backdrop");
   const newsletterEmailEl = document.querySelector("#newsletter-email");
-  const newsletterFormEl = document.querySelector('form[name="email-updates"]');
+  const newsletterFormEl = document.querySelector('form[name="chosen-updates"]');
 
   const productModalEl = document.querySelector(".product-modal");
   const productBackdropEl = document.querySelector(".modal-backdrop");
