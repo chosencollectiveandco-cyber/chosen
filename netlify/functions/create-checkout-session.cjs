@@ -5,7 +5,7 @@ const SIZES = new Set(["S", "M", "L", "XL", "2XL", "3XL"]);
 // Product catalog (prices in cents)
 const CATALOG = {
   "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"] },
-  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePath: "assets/chsn-h1.jpg" },
+  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePaths: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"] },
   "MERCH-03": { name: "CHSN-T2", unitAmount: 4500, imagePath: "assets/chsn-t2.png" },
 };
 

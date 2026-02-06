@@ -10,7 +10,13 @@ const PRODUCT_CATALOG = {
     imageSrc: "assets/chsn-t1.jpg",
     imageSrcs: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"],
   },
-  "MERCH-02": { sku: "MERCH-02", name: "CHSN-H1", price: 85, imageSrc: "assets/chsn-h1.jpg" },
+  "MERCH-02": {
+    sku: "MERCH-02",
+    name: "CHSN-H1",
+    price: 85,
+    imageSrc: "assets/chsn-h1.jpg",
+    imageSrcs: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"],
+  },
   "MERCH-03": { sku: "MERCH-03", name: "CHSN-T2", price: 45, imageSrc: "assets/chsn-t2.png" },
 };
 
