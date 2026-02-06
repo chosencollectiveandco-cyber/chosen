@@ -23,7 +23,7 @@ const AUTO_FREE_PROMO_CODE =
   "";
 
 const CATALOG = {
-  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePath: "assets/chsn-t1.jpg" },
+  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"] },
   "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePath: "assets/chsn-h1.jpg" },
   "MERCH-03": { name: "CHSN-T2", unitAmount: 4500, imagePath: "assets/chsn-t2.png" },
 };
@@ -130,7 +130,12 @@ app.post("/api/create-checkout-session", async (req, res) => {
 
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
-      const imageUrl = absoluteAssetUrl(product.imagePath);
+      const imagePaths = Array.isArray(product.imagePaths)
+        ? product.imagePaths
+        : product.imagePath
+          ? [product.imagePath]
+          : [];
+      const images = imagePaths.map(absoluteAssetUrl).filter(Boolean);
 
       return {
         price_data: {
@@ -139,7 +144,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
           product_data: {
             name: product.name,
             description: `Size: ${item.size}`,
-            ...(imageUrl ? { images: [imageUrl] } : {}),
+            ...(images.length ? { images } : {}),
           },
         },
         quantity: item.quantity,

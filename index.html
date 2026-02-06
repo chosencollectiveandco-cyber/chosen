@@ -91,9 +91,10 @@
 	        <h2 class="section-title">Apparel</h2>
 
 		        <div class="product-grid" aria-label="Products">
-		          <article
-		            class="product-card"
-		            data-sku="MERCH-01"
+	          <article
+	            class="product-card"
+	            data-sku="MERCH-01"
+	            data-images="assets/chsn-t1.jpg,assets/chsn-t1-2.png"
 	            data-image="assets/chsn-t1.jpg"
 	            role="button"
 	            tabindex="0"
@@ -188,12 +189,19 @@
 	      </div>
 
         <div class="product-modal-body">
-          <div class="product-modal-tile">
+          <div
+            class="product-modal-tile"
+            data-action="modal-next-image"
+            role="button"
+            tabindex="0"
+            aria-label="View next image"
+          >
             <img class="product-modal-image" data-product-image alt="" hidden />
           </div>
 
           <div class="product-modal-meta">
             <p class="product-modal-price" data-product-price>$0</p>
+            <p class="product-modal-hint" data-product-image-hint hidden>Image 1 / 1</p>
 
 	          <fieldset class="size-fieldset" aria-label="Select size">
 	            <legend class="size-legend">Size</legend>

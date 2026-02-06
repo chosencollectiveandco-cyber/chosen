@@ -3,7 +3,13 @@ const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
 
 const PRODUCT_CATALOG = {
-  "MERCH-01": { sku: "MERCH-01", name: "CHSN-T1", price: 45, imageSrc: "assets/chsn-t1.jpg" },
+  "MERCH-01": {
+    sku: "MERCH-01",
+    name: "CHSN-T1",
+    price: 45,
+    imageSrc: "assets/chsn-t1.jpg",
+    imageSrcs: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"],
+  },
   "MERCH-02": { sku: "MERCH-02", name: "CHSN-H1", price: 85, imageSrc: "assets/chsn-h1.jpg" },
   "MERCH-03": { sku: "MERCH-03", name: "CHSN-T2", price: 45, imageSrc: "assets/chsn-t2.png" },
 };
@@ -66,7 +72,15 @@ function getProductsFromDom() {
   for (const card of cards) {
     const sku = (card.dataset.sku || "").trim();
     const name = (card.dataset.name || card.querySelector(".product-name")?.textContent || "").trim();
+    const rawImages = (card.dataset.images || "").trim();
+    const imageSrcs = rawImages
+      ? rawImages
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean)
+      : [];
     const imageSrc = (
+      imageSrcs[0] ||
       card.dataset.image ||
       card.querySelector(".product-image")?.getAttribute("src") ||
       ""
@@ -78,7 +92,7 @@ function getProductsFromDom() {
     }
 
     if (!sku || !name || !Number.isFinite(price)) continue;
-    products.set(sku, { sku, name, price, imageSrc });
+    products.set(sku, { sku, name, price, imageSrc, imageSrcs: imageSrcs.length ? imageSrcs : [imageSrc] });
   }
 
   return products;
@@ -235,6 +249,7 @@ function main() {
   const productTitleEl = document.querySelector("[data-product-title]");
   const productPriceEl = document.querySelector("[data-product-price]");
   const productImageEl = document.querySelector("[data-product-image]");
+  const productImageHintEl = document.querySelector("[data-product-image-hint]");
   const sizeGridEl = document.querySelector("[data-size-grid]");
   const qtyInputEl = document.querySelector("[data-qty-input]");
 
@@ -245,6 +260,7 @@ function main() {
       productTitleEl &&
       productPriceEl &&
       productImageEl &&
+      productImageHintEl &&
       sizeGridEl &&
       qtyInputEl,
   );
@@ -285,16 +301,25 @@ function main() {
     productTitleEl.textContent = product.name;
     productPriceEl.textContent = "COMING SOON";
 
+    const images = Array.isArray(product.imageSrcs) && product.imageSrcs.length ? product.imageSrcs : [product.imageSrc];
+    productModalEl.dataset.images = images.join(",");
+    productModalEl.dataset.imageIndex = "0";
+
     if (productImageEl instanceof HTMLImageElement) {
-      if (product.imageSrc) {
+      if (images[0]) {
         productImageEl.hidden = false;
-        productImageEl.src = product.imageSrc;
+        productImageEl.src = images[0];
         productImageEl.alt = product.name;
       } else {
         productImageEl.hidden = true;
         productImageEl.removeAttribute("src");
         productImageEl.alt = "";
       }
+    }
+
+    if (productImageHintEl) {
+      productImageHintEl.hidden = images.length <= 1;
+      productImageHintEl.textContent = `Image 1 / ${images.length}`;
     }
 
     const defaultSize = "M";
@@ -319,11 +344,14 @@ function main() {
     productModalEl.setAttribute("aria-hidden", "true");
     productBackdropEl.hidden = true;
     delete productModalEl.dataset.sku;
+    delete productModalEl.dataset.images;
+    delete productModalEl.dataset.imageIndex;
     if (productImageEl instanceof HTMLImageElement) {
       productImageEl.hidden = true;
       productImageEl.removeAttribute("src");
       productImageEl.alt = "";
     }
+    if (productImageHintEl) productImageHintEl.hidden = true;
 
     if (restoreFocus) lastProductFocus?.focus();
   }
@@ -462,6 +490,35 @@ function main() {
 
       closeProductModal();
       openCart();
+      return;
+    }
+
+    if (action === "modal-next-image") {
+      if (!hasProductModalUi) return;
+      if (!document.body.classList.contains("product-open")) return;
+
+      const raw = (productModalEl.dataset.images || "").trim();
+      const images = raw
+        ? raw
+            .split(",")
+            .map((value) => value.trim())
+            .filter(Boolean)
+        : [];
+      if (images.length <= 1) return;
+
+      const current = clampInt(productModalEl.dataset.imageIndex || "0", { min: 0, max: images.length - 1 });
+      const nextIndex = (current + 1) % images.length;
+      productModalEl.dataset.imageIndex = String(nextIndex);
+
+      if (productImageEl instanceof HTMLImageElement) {
+        productImageEl.hidden = false;
+        productImageEl.src = images[nextIndex];
+      }
+
+      if (productImageHintEl) {
+        productImageHintEl.hidden = false;
+        productImageHintEl.textContent = `Image ${nextIndex + 1} / ${images.length}`;
+      }
       return;
     }
 

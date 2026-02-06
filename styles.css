@@ -478,6 +478,7 @@ body.product-open .product-modal {
   display: grid;
   place-items: center;
   padding: 0;
+  cursor: pointer;
 }
 
 .product-modal-image {
@@ -494,6 +495,13 @@ body.product-open .product-modal {
   justify-items: center;
   text-align: center;
   width: min(520px, 92vw);
+}
+
+.product-modal-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
 }
 
 .product-modal-price {
