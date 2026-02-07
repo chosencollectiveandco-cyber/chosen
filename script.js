@@ -3,6 +3,7 @@ const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
 const NEWSLETTER_RAIL_STORAGE_KEY = "ccco_newsletter_rail_hidden_v1";
 const NAV_ACTIVE_STORAGE_KEY = "ccco_nav_active_v1";
+const PAGE_TRANSITION_STORAGE_KEY = "ccco_page_transition_v1";
 
 const PRODUCT_CATALOG = {
   "MERCH-01": {
@@ -262,6 +263,7 @@ function renderCart({ cartItemsEl, cartTotalEl, cart }, products) {
 }
 
 function main() {
+  initPageTransitions();
   initVerseReveal();
   initNavUnderline();
 
@@ -690,6 +692,100 @@ function main() {
       closeCart();
     }
   });
+}
+
+function initPageTransitions() {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  if (reduceMotion) return;
+
+  const overlay = document.createElement("div");
+  overlay.className = "page-transition";
+  overlay.setAttribute("aria-hidden", "true");
+  document.body.appendChild(overlay);
+
+  function setActive(next) {
+    overlay.classList.toggle("is-active", Boolean(next));
+  }
+
+  function safeUrlFromHref(href) {
+    if (!href) return null;
+    if (href.startsWith("#")) return null;
+    if (href.startsWith("mailto:") || href.startsWith("tel:")) return null;
+    try {
+      return new URL(href, window.location.href);
+    } catch {
+      return null;
+    }
+  }
+
+  const shouldAnimateIn = sessionStorage.getItem(PAGE_TRANSITION_STORAGE_KEY) === "1";
+  if (shouldAnimateIn) {
+    sessionStorage.removeItem(PAGE_TRANSITION_STORAGE_KEY);
+    setActive(true);
+    window.requestAnimationFrame(() => setActive(false));
+  }
+
+  let navigating = false;
+
+  function navigateTo(url) {
+    if (navigating) return;
+    navigating = true;
+
+    sessionStorage.setItem(PAGE_TRANSITION_STORAGE_KEY, "1");
+    setActive(true);
+
+    const go = () => {
+      window.location.href = url;
+    };
+
+    const timeout = window.setTimeout(go, 360);
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        window.clearTimeout(timeout);
+        go();
+      },
+      { once: true },
+    );
+  }
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (event.defaultPrevented) return;
+      if (event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest("a");
+      if (!(link instanceof HTMLAnchorElement)) return;
+      if (link.target && link.target !== "_self") return;
+      if (link.hasAttribute("download")) return;
+      if (link.dataset.noTransition === "true") return;
+
+      const href = (link.getAttribute("href") || "").trim();
+      const url = safeUrlFromHref(href);
+      if (!url) return;
+      if (url.origin !== window.location.origin) return;
+
+      const current = new URL(window.location.href);
+      const samePageDifferentHash =
+        url.pathname === current.pathname && url.search === current.search && url.hash && url.hash !== current.hash;
+      if (samePageDifferentHash) return;
+
+      event.preventDefault();
+      navigateTo(url.href);
+    },
+    { capture: true },
+  );
+
+  window.addEventListener(
+    "pageshow",
+    () => {
+      setActive(false);
+    },
+    { passive: true },
+  );
 }
 
 function initProductMagnifier() {
