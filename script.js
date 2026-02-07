@@ -2,6 +2,7 @@ const STORAGE_KEY = "bw_cart_v1";
 const SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
 const CART_KEY_SEPARATOR = "::";
 const NEWSLETTER_RAIL_STORAGE_KEY = "ccco_newsletter_rail_hidden_v1";
+const NAV_ACTIVE_STORAGE_KEY = "ccco_nav_active_v1";
 
 const PRODUCT_CATALOG = {
   "MERCH-01": {
@@ -262,6 +263,7 @@ function renderCart({ cartItemsEl, cartTotalEl, cart }, products) {
 
 function main() {
   initVerseReveal();
+  initNavUnderline();
 
   const products = getProductsFromDom();
 
@@ -670,6 +672,71 @@ function main() {
       closeCart();
     }
   });
+}
+
+function initNavUnderline() {
+  const links = Array.from(document.querySelectorAll(".top-nav .nav-link"));
+  if (links.length === 0) return;
+
+  function normalizedKey(rawHref) {
+    try {
+      const url = new URL(rawHref, window.location.href);
+      let path = url.pathname || "/";
+      if (path === "/") path = "/index.html";
+      return `${path}${url.hash || ""}`;
+    } catch {
+      return String(rawHref || "");
+    }
+  }
+
+  const keysByLink = new Map(links.map((link) => [link, normalizedKey(link.getAttribute("href") || "")]));
+  const availableKeys = new Set(keysByLink.values());
+
+  function setActive(linkToActivate) {
+    for (const link of links) link.classList.remove("is-active");
+    if (!linkToActivate) return;
+    linkToActivate.classList.add("is-active");
+    const key = keysByLink.get(linkToActivate);
+    if (key) localStorage.setItem(NAV_ACTIVE_STORAGE_KEY, key);
+  }
+
+  function activateByKey(key) {
+    if (!key) return false;
+    const match = links.find((link) => keysByLink.get(link) === key);
+    if (!match) return false;
+    setActive(match);
+    return true;
+  }
+
+  function activateForCurrentLocation() {
+    const current = new URL(window.location.href);
+    let path = current.pathname || "/";
+    if (path === "/") path = "/index.html";
+
+    const candidates = [`${path}${current.hash || ""}`, path];
+    for (const candidate of candidates) {
+      if (availableKeys.has(candidate) && activateByKey(candidate)) return;
+    }
+
+    const stored = localStorage.getItem(NAV_ACTIVE_STORAGE_KEY) || "";
+    if (stored && availableKeys.has(stored) && activateByKey(stored)) return;
+
+    if (path === "/index.html" && availableKeys.has("/index.html#home")) {
+      activateByKey("/index.html#home");
+      return;
+    }
+
+    setActive(links[0] || null);
+  }
+
+  for (const link of links) {
+    link.addEventListener("click", () => {
+      setActive(link);
+    });
+  }
+
+  window.addEventListener("hashchange", activateForCurrentLocation, { passive: true });
+  activateForCurrentLocation();
 }
 
 function initVerseReveal() {
