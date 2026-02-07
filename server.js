@@ -23,7 +23,7 @@ const AUTO_FREE_PROMO_CODE =
   "";
 
 const CATALOG = {
-  "MERCH-01": { name: "CHSN-T1", unitAmount: 4500, imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"] },
+  "MERCH-01": { name: "CHSN-T1", unitAmount: 4000, imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"] },
   "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePaths: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"] },
   "MERCH-03": { name: "CHSN-T2", unitAmount: 4500, imagePath: "assets/chsn-t2.png" },
 };

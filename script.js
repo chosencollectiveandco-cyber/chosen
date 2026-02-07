@@ -7,7 +7,7 @@ const PRODUCT_CATALOG = {
   "MERCH-01": {
     sku: "MERCH-01",
     name: "CHSN-T1",
-    price: 45,
+    price: 40,
     imageSrc: "assets/chsn-t1.jpg",
     imageSrcs: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"],
   },
@@ -330,7 +330,7 @@ function main() {
     lastProductFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     productModalEl.dataset.sku = sku;
     productTitleEl.textContent = product.name;
-    productPriceEl.textContent = "COMING SOON";
+    productPriceEl.textContent = money.format(product.price);
 
     const images = Array.isArray(product.imageSrcs) && product.imageSrcs.length ? product.imageSrcs : [product.imageSrc];
     productModalEl.dataset.images = images.join(",");
