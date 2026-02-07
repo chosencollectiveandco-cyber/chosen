@@ -24,8 +24,16 @@ body {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   --verse-rail-width: clamp(56px, 7vw, 86px);
-  padding-left: var(--verse-rail-width);
   --newsletter-rail-width: clamp(220px, 24vw, 320px);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+body.has-verse {
+  padding-left: var(--verse-rail-width);
+}
+
+body.has-newsletter {
   padding-right: var(--newsletter-rail-width);
 }
 
@@ -227,7 +235,8 @@ button:focus-visible,
   scroll-margin-top: 84px;
   display: grid;
   justify-items: center;
-  padding-top: 46px;
+  min-height: calc(100svh - 208px);
+  align-content: center;
 }
 
 .devotion {

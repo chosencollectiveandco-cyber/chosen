@@ -265,6 +265,8 @@ function main() {
 
   const products = getProductsFromDom();
 
+  document.body.classList.toggle("has-verse", Boolean(document.querySelector(".verse-rail")));
+
   const cartCountEl = document.querySelector(".cart-count");
   const cartDrawerEl = document.querySelector(".cart-drawer");
   const backdropEl = document.querySelector(".backdrop");
@@ -313,6 +315,7 @@ function main() {
   }
 
   if (hasNewsletterRailUi) {
+    document.body.classList.add("has-newsletter");
     if (localStorage.getItem(NEWSLETTER_RAIL_STORAGE_KEY) === "1") {
       document.body.classList.add("newsletter-hidden");
     }

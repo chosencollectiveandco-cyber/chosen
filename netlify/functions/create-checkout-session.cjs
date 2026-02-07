@@ -2,11 +2,30 @@ const Stripe = require("stripe");
 
 const SIZES = new Set(["S", "M", "L", "XL", "2XL", "3XL"]);
 
+function env(name) {
+  return String(process.env[name] || "").trim();
+}
+
 // Product catalog (prices in cents)
 const CATALOG = {
-  "MERCH-01": { name: "CHSN-T1", unitAmount: 4000, imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"] },
-  "MERCH-02": { name: "CHSN-H1", unitAmount: 8500, imagePaths: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"] },
-  "MERCH-03": { name: "CHSN-T2", unitAmount: 4500, imagePath: "assets/chsn-t2.png" },
+  "MERCH-01": {
+    name: "CHSN-T1",
+    unitAmount: 4000,
+    imagePaths: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"],
+    priceId: env("STRIPE_PRICE_MERCH_01"),
+  },
+  "MERCH-02": {
+    name: "CHSN-H1",
+    unitAmount: 8500,
+    imagePaths: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"],
+    priceId: env("STRIPE_PRICE_MERCH_02"),
+  },
+  "MERCH-03": {
+    name: "CHSN-T2",
+    unitAmount: 4500,
+    imagePath: "assets/chsn-t2.png",
+    priceId: env("STRIPE_PRICE_MERCH_03"),
+  },
 };
 
 function absoluteAssetUrl(domain, assetPath) {
@@ -110,6 +129,14 @@ exports.handler = async (event) => {
 
     const lineItems = items.map((item) => {
       const product = CATALOG[item.sku];
+
+      if (product.priceId) {
+        return {
+          price: product.priceId,
+          quantity: item.quantity,
+        };
+      }
+
       const imagePaths = Array.isArray(product.imagePaths)
         ? product.imagePaths
         : product.imagePath
