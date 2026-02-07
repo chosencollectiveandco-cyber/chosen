@@ -1184,6 +1184,15 @@ body.product-open {
 }
 
 @media (max-width: 600px) {
+  .nav-left {
+    flex: 1;
+    justify-content: center;
+  }
+
+  body.home-page .brand-logo {
+    margin-bottom: clamp(-44px, -10vw, -22px);
+  }
+
   body {
     padding-left: 0;
     padding-right: 0;
