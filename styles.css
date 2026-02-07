@@ -1184,9 +1184,23 @@ body.product-open {
 }
 
 @media (max-width: 600px) {
+  .top-nav {
+    position: relative;
+    justify-content: center;
+  }
+
   .nav-left {
     flex: 1;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+  }
+
+  .cart-button {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   body.home-page .brand-logo {
