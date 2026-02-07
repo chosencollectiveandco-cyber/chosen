@@ -629,6 +629,30 @@ body.newsletter-hidden .newsletter-toggle {
   transform: translate(-50%, -50%) scale(1);
 }
 
+.product-card.magnify-safe.is-magnifying:hover .zoom-lens,
+.product-card.magnify-safe.is-magnifying:focus-within .zoom-lens {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+}
+
+.product-card.magnify-safe {
+  cursor: default;
+}
+
+.product-modal.is-magnifying.magnify-hover .zoom-lens {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.product-modal.magnify-safe .zoom-lens {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+}
+
+.product-modal.magnify-safe .product-modal-tile {
+  cursor: default;
+}
+
 .magnify-button {
   position: absolute;
   right: 16px;
@@ -649,8 +673,20 @@ body.newsletter-hidden .newsletter-toggle {
   transition: opacity 0.18s ease, transform 0.18s ease, background 0.2s ease;
 }
 
+.magnify-button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--border);
+}
+
 .product-card:not([data-coming-soon="true"]):hover .magnify-button,
 .product-card:not([data-coming-soon="true"]):focus-within .magnify-button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.product-modal:not([data-coming-soon="true"]) .product-modal-tile:hover .magnify-button,
+.product-modal:not([data-coming-soon="true"]) .product-modal-tile:focus-within .magnify-button {
   opacity: 1;
   transform: scale(1);
 }
@@ -818,6 +854,8 @@ body.product-open .product-modal {
   height: min(72vh, 820px);
   background: transparent;
   border: 0;
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
   padding: 0;

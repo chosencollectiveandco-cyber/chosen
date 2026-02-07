@@ -305,6 +305,14 @@ function main() {
       qtyInputEl,
   );
 
+  const modalMagnifier = hasProductModalUi
+    ? initModalMagnifier({
+        productModalEl,
+        tileEl: productModalEl.querySelector(".product-modal-tile"),
+        imageEl: productImageEl,
+      })
+    : null;
+
   function hideNewsletterRail() {
     if (!hasNewsletterRailUi) return;
     document.body.classList.add("newsletter-hidden");
@@ -355,6 +363,7 @@ function main() {
     if (!product) return;
 
     closeCart({ restoreFocus: false });
+    modalMagnifier?.disable();
 
     lastProductFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     productModalEl.dataset.sku = sku;
@@ -424,6 +433,7 @@ function main() {
     if (!document.body.classList.contains("product-open")) return;
 
     document.body.classList.remove("product-open");
+    modalMagnifier?.disable();
     productModalEl.setAttribute("aria-hidden", "true");
     productBackdropEl.hidden = true;
     delete productModalEl.dataset.sku;
@@ -525,6 +535,10 @@ function main() {
     const action = actionEl.dataset.action;
     if (!action) return;
 
+    if (action === "magnify" || action === "modal-magnify") {
+      return;
+    }
+
     if (action === "hide-newsletter") {
       hideNewsletterRail();
       return;
@@ -594,6 +608,7 @@ function main() {
     if (action === "modal-next-image") {
       if (!hasProductModalUi) return;
       if (!document.body.classList.contains("product-open")) return;
+      if (productModalEl.classList.contains("is-magnifying")) return;
 
       const raw = (productModalEl.dataset.images || "").trim();
       const images = raw
@@ -711,6 +726,22 @@ function initProductMagnifier() {
     lens.setAttribute("aria-hidden", "true");
     tile.appendChild(lens);
 
+    function isInSafeZone(event) {
+      if (!event) return false;
+      const rect = button.getBoundingClientRect();
+      const padding = 14;
+      return (
+        event.clientX >= rect.left - padding &&
+        event.clientX <= rect.right + padding &&
+        event.clientY >= rect.top - padding &&
+        event.clientY <= rect.bottom + padding
+      );
+    }
+
+    function setSafeMode(next) {
+      card.classList.toggle("magnify-safe", Boolean(next));
+    }
+
     function applyBackground() {
       const src = img.currentSrc || img.src || "";
       if (!src) return;
@@ -741,8 +772,9 @@ function initProductMagnifier() {
       if (!enabled) return;
 
       applyBackground();
+      setSafeMode(isInSafeZone(event));
       if (event) {
-        update(event);
+        if (!isInSafeZone(event)) update(event);
         return;
       }
 
@@ -757,16 +789,148 @@ function initProductMagnifier() {
     });
 
     card.addEventListener("pointerenter", (event) => {
+      setSafeMode(isInSafeZone(event));
       if (!card.classList.contains("is-magnifying")) return;
+      if (isInSafeZone(event)) return;
       applyBackground();
       update(event);
     });
 
     card.addEventListener("pointermove", (event) => {
+      setSafeMode(isInSafeZone(event));
       if (!card.classList.contains("is-magnifying")) return;
+      if (isInSafeZone(event)) return;
       update(event);
     });
+
+    card.addEventListener("pointerleave", () => {
+      setSafeMode(false);
+    });
   }
+}
+
+function initModalMagnifier({ productModalEl, tileEl, imageEl }) {
+  if (!window.matchMedia?.("(hover: hover) and (pointer: fine)").matches) return null;
+  if (!productModalEl || !tileEl || !(imageEl instanceof HTMLImageElement)) return null;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "magnify-button";
+  button.dataset.action = "modal-magnify";
+  button.setAttribute("aria-label", "Magnify");
+  button.setAttribute("aria-pressed", "false");
+  button.innerHTML = `
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+      <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `.trim();
+  tileEl.appendChild(button);
+
+  const lens = document.createElement("div");
+  lens.className = "zoom-lens";
+  lens.setAttribute("aria-hidden", "true");
+  tileEl.appendChild(lens);
+
+  function isInSafeZone(event) {
+    if (!event) return false;
+    const rect = button.getBoundingClientRect();
+    const padding = 14;
+    return (
+      event.clientX >= rect.left - padding &&
+      event.clientX <= rect.right + padding &&
+      event.clientY >= rect.top - padding &&
+      event.clientY <= rect.bottom + padding
+    );
+  }
+
+  function setSafeMode(next) {
+    productModalEl.classList.toggle("magnify-safe", Boolean(next));
+  }
+
+  function applyBackground() {
+    const src = imageEl.currentSrc || imageEl.src || "";
+    if (!src) return;
+    lens.style.backgroundImage = `url("${src}")`;
+  }
+
+  function update(event) {
+    const rect = tileEl.getBoundingClientRect();
+    const x = clamp(event.clientX - rect.left, 0, rect.width);
+    const y = clamp(event.clientY - rect.top, 0, rect.height);
+
+    lens.style.left = `${x}px`;
+    lens.style.top = `${y}px`;
+
+    const zoom = 2.2;
+    lens.style.backgroundSize = `${Math.max(1, rect.width * zoom)}px ${Math.max(1, rect.height * zoom)}px`;
+
+    const xPercent = rect.width === 0 ? 50 : (x / rect.width) * 100;
+    const yPercent = rect.height === 0 ? 50 : (y / rect.height) * 100;
+    lens.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+  }
+
+  function setEnabled(next, event) {
+    const enabled = Boolean(next);
+    productModalEl.classList.toggle("is-magnifying", enabled);
+    productModalEl.classList.toggle("magnify-hover", false);
+    setSafeMode(isInSafeZone(event));
+    button.setAttribute("aria-pressed", enabled ? "true" : "false");
+
+    if (!enabled) return;
+
+    applyBackground();
+    if (event && !isInSafeZone(event)) {
+      productModalEl.classList.add("magnify-hover");
+      update(event);
+      return;
+    }
+
+    const rect = tileEl.getBoundingClientRect();
+    if (!isInSafeZone(event)) productModalEl.classList.add("magnify-hover");
+    update({ clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 });
+  }
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setEnabled(!productModalEl.classList.contains("is-magnifying"), event);
+  });
+
+  tileEl.addEventListener("pointerenter", (event) => {
+    setSafeMode(isInSafeZone(event));
+    if (!productModalEl.classList.contains("is-magnifying")) return;
+    if (isInSafeZone(event)) return;
+    productModalEl.classList.add("magnify-hover");
+    applyBackground();
+    update(event);
+  });
+
+  tileEl.addEventListener("pointermove", (event) => {
+    setSafeMode(isInSafeZone(event));
+    if (!productModalEl.classList.contains("is-magnifying")) return;
+    if (isInSafeZone(event)) {
+      productModalEl.classList.remove("magnify-hover");
+      return;
+    }
+    productModalEl.classList.add("magnify-hover");
+    update(event);
+  });
+
+  tileEl.addEventListener("pointerleave", () => {
+    setSafeMode(false);
+    productModalEl.classList.remove("magnify-hover");
+  });
+
+  return {
+    disable() {
+      setEnabled(false);
+    },
+  };
 }
 
 function initNavUnderline() {
