@@ -17,8 +17,15 @@ const PRODUCT_CATALOG = {
     price: 85,
     imageSrc: "assets/chsn-h1.jpg",
     imageSrcs: ["assets/chsn-h1.jpg", "assets/chsn-h1-2.png"],
+    comingSoon: true,
   },
-  "MERCH-03": { sku: "MERCH-03", name: "CHSN-T2", price: 45, imageSrc: "assets/chsn-t2.png" },
+  "MERCH-03": {
+    sku: "MERCH-03",
+    name: "CHSN-T2",
+    price: 45,
+    imageSrc: "assets/chsn-t2.png",
+    comingSoon: true,
+  },
 };
 
 const money = new Intl.NumberFormat(undefined, {
@@ -78,6 +85,7 @@ function getProductsFromDom() {
 
   for (const card of cards) {
     const sku = (card.dataset.sku || "").trim();
+    const existing = sku ? products.get(sku) : null;
     const name = (card.dataset.name || card.querySelector(".product-name")?.textContent || "").trim();
     const rawImages = (card.dataset.images || "").trim();
     const imageSrcs = rawImages
@@ -99,7 +107,17 @@ function getProductsFromDom() {
     }
 
     if (!sku || !name || !Number.isFinite(price)) continue;
-    products.set(sku, { sku, name, price, imageSrc, imageSrcs: imageSrcs.length ? imageSrcs : [imageSrc] });
+    const comingSoon =
+      String(card.dataset.comingSoon || "").trim().toLowerCase() === "true" || Boolean(existing?.comingSoon);
+
+    products.set(sku, {
+      sku,
+      name,
+      price,
+      imageSrc,
+      imageSrcs: imageSrcs.length ? imageSrcs : [imageSrc],
+      comingSoon,
+    });
   }
 
   return products;
@@ -118,13 +136,15 @@ function sanitizeCart(cart, products) {
 
     const parsed = parseCartKey(rawKey);
     if (parsed) {
-      if (!products.has(parsed.sku)) continue;
+      const product = products.get(parsed.sku);
+      if (!product || product.comingSoon) continue;
       next[makeCartKey(parsed.sku, parsed.size)] = Math.floor(qty);
       continue;
     }
 
     const legacySku = String(rawKey).trim();
-    if (!legacySku || !products.has(legacySku)) continue;
+    const legacyProduct = legacySku ? products.get(legacySku) : null;
+    if (!legacyProduct || legacyProduct.comingSoon) continue;
 
     const key = makeCartKey(legacySku, "M");
     next[key] = (Number(next[key]) || 0) + Math.floor(qty);
@@ -259,6 +279,7 @@ function main() {
   const productBackdropEl = document.querySelector(".modal-backdrop");
   const productTitleEl = document.querySelector("[data-product-title]");
   const productPriceEl = document.querySelector("[data-product-price]");
+  const productStatusEl = document.querySelector("[data-product-status]");
   const productImageEl = document.querySelector("[data-product-image]");
   const productImageHintEl = document.querySelector("[data-product-image-hint]");
   const sizeGridEl = document.querySelector("[data-size-grid]");
@@ -271,6 +292,7 @@ function main() {
       productBackdropEl &&
       productTitleEl &&
       productPriceEl &&
+      productStatusEl &&
       productImageEl &&
       productImageHintEl &&
       sizeGridEl &&
@@ -330,7 +352,30 @@ function main() {
     lastProductFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     productModalEl.dataset.sku = sku;
     productTitleEl.textContent = product.name;
-    productPriceEl.textContent = money.format(product.price);
+    productModalEl.dataset.comingSoon = product.comingSoon ? "true" : "false";
+
+    if (product.comingSoon) {
+      productPriceEl.hidden = true;
+      productPriceEl.textContent = "";
+      productStatusEl.hidden = false;
+      productStatusEl.textContent = "COMING SOON";
+    } else {
+      productPriceEl.hidden = false;
+      productPriceEl.textContent = money.format(product.price);
+      productStatusEl.hidden = true;
+      productStatusEl.textContent = "";
+    }
+
+    const modalAddButtonEl = productModalEl.querySelector('[data-action="modal-add"]');
+    if (modalAddButtonEl instanceof HTMLButtonElement) {
+      if (product.comingSoon) {
+        modalAddButtonEl.disabled = true;
+        modalAddButtonEl.textContent = "Coming soon";
+      } else {
+        modalAddButtonEl.disabled = false;
+        modalAddButtonEl.textContent = "Add to cart";
+      }
+    }
 
     const images = Array.isArray(product.imageSrcs) && product.imageSrcs.length ? product.imageSrcs : [product.imageSrc];
     productModalEl.dataset.images = images.join(",");
@@ -377,12 +422,15 @@ function main() {
     delete productModalEl.dataset.sku;
     delete productModalEl.dataset.images;
     delete productModalEl.dataset.imageIndex;
+    delete productModalEl.dataset.comingSoon;
     if (productImageEl instanceof HTMLImageElement) {
       productImageEl.hidden = true;
       productImageEl.removeAttribute("src");
       productImageEl.alt = "";
     }
     if (productImageHintEl) productImageHintEl.hidden = true;
+    if (productStatusEl) productStatusEl.hidden = true;
+    if (productPriceEl) productPriceEl.hidden = false;
 
     if (restoreFocus) lastProductFocus?.focus();
   }
