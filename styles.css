@@ -29,6 +29,32 @@ body {
   padding-right: 0;
 }
 
+body.home-page {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+    url("assets/websiteBackground.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body.home-page .home-inner {
+  gap: clamp(6px, 1.2vw, 14px);
+}
+
+body.home-page .brand-logo {
+  margin-bottom: clamp(-72px, -6vw, -36px);
+}
+
+body.home-page .hero-button {
+  width: min(260px, 72vw);
+  text-align: center;
+  margin-top: clamp(6px, 1vw, 10px);
+}
+
+body.home-page .brand-description {
+  max-width: min(80ch, 92vw);
+}
+
 body.has-verse {
   padding-left: var(--verse-rail-width);
 }
@@ -86,7 +112,8 @@ button {
 .nav-link:focus-visible,
 button:focus-visible,
 .checkout-button:focus-visible,
-.add-button:focus-visible {
+.add-button:focus-visible,
+.hero-button:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
@@ -95,10 +122,14 @@ button:focus-visible,
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--bg);
   border-bottom: 0;
+}
+
+body.home-page .site-header {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .top-nav {
@@ -258,6 +289,24 @@ button:focus-visible,
   font-size: 0.82rem;
   letter-spacing: 0.18em;
   line-height: 1.6;
+}
+
+.hero-button {
+  border: 1px solid var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hero-button:hover {
+  background: var(--bg);
+  color: var(--ink);
 }
 
 .home-hero,
@@ -554,11 +603,61 @@ body.newsletter-hidden .newsletter-toggle {
   border: 0;
   background: var(--bg);
   position: relative;
+  overflow: hidden;
   transition: transform 0.2s ease;
   width: 100%;
   display: grid;
   place-items: center;
   padding: 26px;
+}
+
+.product-card:not([data-coming-soon="true"]) .product-tile::before {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--soft);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.product-card:not([data-coming-soon="true"]):hover .product-tile::before,
+.product-card:not([data-coming-soon="true"]):focus-visible .product-tile::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.zoom-lens {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background-color: rgba(255, 255, 255, 0.92);
+  background-repeat: no-repeat;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.14);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.product-card.is-magnifying .zoom-lens {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .product-tile::after {
@@ -1136,6 +1235,7 @@ body.product-open {
   .cart-button,
   .add-button,
   .product-tile,
+  .zoom-lens,
   .product-modal,
   .icon-button,
   .qty-button,
