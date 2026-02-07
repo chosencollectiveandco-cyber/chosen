@@ -29,12 +29,12 @@
     <link rel="stylesheet" href="styles.css" />
     <script defer src="script.js"></script>
   </head>
-  <body>
+  <body class="home-page">
     <header class="site-header">
       <nav class="top-nav" aria-label="Primary">
         <div class="nav-left">
-          <a href="#home" class="nav-link">Home</a>
-          <a href="#apparel" class="nav-link">Apparel</a>
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="apparel.html" class="nav-link">Apparel</a>
           <a href="prayer.html" class="nav-link">Prayer Request</a>
           <a href="devotion.html" class="nav-link">Devotion</a>
         </div>
@@ -68,196 +68,15 @@
       </nav>
     </header>
 
-    <aside class="verse-rail" aria-label="Verse">
-      <div class="verse-mask" data-verse-mask>
-        <p class="verse-text" data-verse-text>
-          But you are a chosen people, a royal priesthood, a holy nation, God’s special possession, that you may declare
-          the praises of him who called you out of darkness into his wonderful light.
-        </p>
-      </div>
-    </aside>
-
-	    <main class="page">
-	      <section id="home" class="home-hero" aria-label="Home">
-	        <div class="home-inner">
-	          <img class="brand-logo" src="assets/chosenlogo.png" alt="CHSN" decoding="async" />
-	          <p class="brand-description">
-	            Faith-driven streetwear crafted to glorify Jesus.
-	          </p>
-	        </div>
-	      </section>
-
-	      <section id="apparel" class="merch" aria-label="Apparel">
-	        <h2 class="section-title">Apparel</h2>
-
-		        <div class="product-grid" aria-label="Products">
-	          <article
-	            class="product-card"
-	            data-sku="MERCH-01"
-	            data-images="assets/chsn-t1.jpg,assets/chsn-t1-2.png"
-	            data-image="assets/chsn-t1.jpg"
-	            role="button"
-	            tabindex="0"
-	            aria-haspopup="dialog"
-	            aria-label="Open CHSN-T1 details"
-	          >
-	            <div class="product-tile">
-	              <img
-	                class="product-image"
-	                src="assets/chsn-t1.jpg"
-	                alt=""
-	                loading="lazy"
-	                decoding="async"
-	              />
-	            </div>
-	            <div class="product-meta">
-	              <p class="product-name">CHSN-T1</p>
-	              <p class="product-price">$40</p>
-	            </div>
-	          </article>
-
-	          <article
-	            class="product-card"
-	            data-sku="MERCH-02"
-	            data-coming-soon="true"
-	            data-images="assets/chsn-h1.jpg,assets/chsn-h1-2.png"
-	            data-image="assets/chsn-h1.jpg"
-	            aria-disabled="true"
-	            tabindex="-1"
-	            aria-label="CHSN-H1 coming soon"
-	          >
-	            <div class="product-tile">
-	              <img
-	                class="product-image"
-	                src="assets/chsn-h1.jpg"
-	                alt=""
-	                loading="lazy"
-	                decoding="async"
-	              />
-	            </div>
-	            <div class="product-meta">
-	              <p class="product-name">CHSN-H1</p>
-	              <p class="product-price">$85</p>
-	            </div>
-		          </article>
-
-              <article
-                class="product-card"
-                data-sku="MERCH-03"
-                data-coming-soon="true"
-                data-image="assets/chsn-t2.png"
-                aria-disabled="true"
-                tabindex="-1"
-                aria-label="CHSN-T2 coming soon"
-              >
-                <div class="product-tile">
-                  <img
-                    class="product-image"
-                    src="assets/chsn-t2.png"
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <div class="product-meta">
-                  <p class="product-name">CHSN-T2</p>
-                  <p class="product-price">$45</p>
-                </div>
-              </article>
-		        </div>
-	      </section>
-
-	    </main>
-
-	    <div class="modal-backdrop" data-action="close-product" hidden></div>
-	    <aside
-	      class="product-modal"
-	      role="dialog"
-	      aria-modal="true"
-	      aria-label="Product details"
-	      aria-hidden="true"
-	    >
-	      <div class="product-modal-header">
-	        <h2 class="product-modal-title" data-product-title>Product</h2>
-	        <button
-	          class="icon-button"
-	          type="button"
-	          data-action="close-product"
-	          aria-label="Close product"
-	        >
-	          <span aria-hidden="true">×</span>
-	        </button>
-	      </div>
-
-        <div class="product-modal-body">
-          <div
-            class="product-modal-tile"
-            data-action="modal-next-image"
-            role="button"
-            tabindex="0"
-            aria-label="View next image"
-          >
-            <img class="product-modal-image" data-product-image alt="" hidden />
-          </div>
-
-          <div class="product-modal-meta">
-            <p class="product-modal-price" data-product-price>$0</p>
-            <p class="product-modal-status" data-product-status hidden>COMING SOON</p>
-            <p class="product-modal-hint" data-product-image-hint hidden>Image 1 / 1</p>
-
-	          <fieldset class="size-fieldset" aria-label="Select size">
-	            <legend class="size-legend">Size</legend>
-	            <div class="size-grid" data-size-grid>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="S" />
-	                <span class="size-pill">S</span>
-	              </label>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="M" checked />
-	                <span class="size-pill">M</span>
-	              </label>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="L" />
-	                <span class="size-pill">L</span>
-	              </label>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="XL" />
-	                <span class="size-pill">XL</span>
-	              </label>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="2XL" />
-	                <span class="size-pill">2XL</span>
-	              </label>
-	              <label class="size-option">
-	                <input type="radio" name="size" value="3XL" />
-	                <span class="size-pill">3XL</span>
-	              </label>
-	            </div>
-	          </fieldset>
-
-	          <div class="qty-picker" aria-label="Select quantity">
-	            <button class="qty-button" type="button" data-action="modal-dec" aria-label="Decrease quantity">
-	              −
-	            </button>
-	            <input
-	              class="qty-input"
-	              type="number"
-	              min="1"
-	              max="99"
-	              value="1"
-	              inputmode="numeric"
-	              data-qty-input
-	              aria-label="Quantity"
-	            />
-	            <button class="qty-button" type="button" data-action="modal-inc" aria-label="Increase quantity">
-	              +
-	            </button>
-	          </div>
-
-	          <button class="add-button" type="button" data-action="modal-add">Add to cart</button>
-	        </div>
-	      </div>
-	    </aside>
+    <main class="page">
+      <section id="home" class="home-hero" aria-label="Home">
+        <div class="home-inner">
+          <img class="brand-logo" src="assets/chosenlogo.png" alt="CHSN" decoding="async" />
+          <p class="brand-description">Faith-Driven Streetwear crafted to Glorify Jesus</p>
+          <a class="hero-button" href="apparel.html">Shop Now</a>
+        </div>
+      </section>
+    </main>
 
 	    <div class="backdrop" data-action="close-cart" hidden></div>
     <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
@@ -280,48 +99,5 @@
       </div>
     </aside>
 
-    <aside class="newsletter-rail" aria-label="Email updates">
-      <div class="newsletter-rail-inner">
-        <button class="newsletter-rail-close" type="button" data-action="hide-newsletter" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-        <h2 class="newsletter-title">Be First</h2>
-        <p class="newsletter-copy">Enter your email for first access to drops.</p>
-
-        <form
-          class="newsletter-form"
-          name="chosen-updates"
-          method="POST"
-          action="updates-success.html"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-        >
-          <input type="hidden" name="form-name" value="chosen-updates" />
-          <p class="form-hidden">
-            <label>
-              Don’t fill this out: <input name="bot-field" />
-            </label>
-          </p>
-
-          <label class="newsletter-label" for="newsletter-email">Email</label>
-          <input
-            class="newsletter-input"
-            id="newsletter-email"
-            name="email"
-            type="email"
-            autocomplete="email"
-            inputmode="email"
-            required
-          />
-          <button class="newsletter-button" type="submit">Join</button>
-        </form>
-
-        <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
-      </div>
-    </aside>
-
-    <button class="newsletter-toggle" type="button" data-action="show-newsletter" aria-label="Open email updates">
-      Updates
-    </button>
   </body>
 </html>

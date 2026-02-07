@@ -267,6 +267,8 @@ function main() {
 
   const products = getProductsFromDom();
 
+  initProductMagnifier();
+
   document.body.classList.toggle("has-verse", Boolean(document.querySelector(".verse-rail")));
 
   const cartCountEl = document.querySelector(".cart-count");
@@ -672,6 +674,69 @@ function main() {
       closeCart();
     }
   });
+}
+
+function initProductMagnifier() {
+  if (!window.matchMedia?.("(hover: hover) and (pointer: fine)").matches) return;
+
+  const cards = Array.from(document.querySelectorAll('.product-card:not([data-coming-soon="true"])'));
+  if (cards.length === 0) return;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  for (const card of cards) {
+    const tile = card.querySelector(".product-tile");
+    const img = card.querySelector(".product-image");
+    if (!tile || !img) continue;
+
+    const lens = document.createElement("div");
+    lens.className = "zoom-lens";
+    lens.setAttribute("aria-hidden", "true");
+    tile.appendChild(lens);
+
+    function applyBackground() {
+      const src = img.currentSrc || img.src || "";
+      if (!src) return;
+      lens.style.backgroundImage = `url("${src}")`;
+    }
+
+    function update(event) {
+      const rect = tile.getBoundingClientRect();
+      const x = clamp(event.clientX - rect.left, 0, rect.width);
+      const y = clamp(event.clientY - rect.top, 0, rect.height);
+
+      lens.style.left = `${x}px`;
+      lens.style.top = `${y}px`;
+
+      const zoom = 2.2;
+      lens.style.backgroundSize = `${Math.max(1, rect.width * zoom)}px ${Math.max(1, rect.height * zoom)}px`;
+
+      const xPercent = rect.width === 0 ? 50 : (x / rect.width) * 100;
+      const yPercent = rect.height === 0 ? 50 : (y / rect.height) * 100;
+      lens.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+    }
+
+    card.addEventListener("pointerenter", (event) => {
+      applyBackground();
+      card.classList.add("is-magnifying");
+      update(event);
+    });
+
+    card.addEventListener("pointermove", (event) => {
+      if (!card.classList.contains("is-magnifying")) return;
+      update(event);
+    });
+
+    card.addEventListener("pointerleave", () => {
+      card.classList.remove("is-magnifying");
+    });
+
+    card.addEventListener("click", () => {
+      card.classList.remove("is-magnifying");
+    });
+  }
 }
 
 function initNavUnderline() {
