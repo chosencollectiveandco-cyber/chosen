@@ -507,6 +507,7 @@ function main() {
     const actionEl = event.target instanceof Element ? event.target.closest("[data-action]") : null;
     if (!actionEl) {
       if (productCard && hasProductModalUi) {
+        if (String(productCard.dataset.comingSoon || "").trim().toLowerCase() === "true") return;
         const sku = productCard.dataset.sku;
         if (sku) openProductModal(sku);
       }
@@ -640,6 +641,7 @@ function main() {
       if (!(target instanceof Element)) return;
       const card = target.closest(".product-card");
       if (!card || target !== card) return;
+      if (String(card.dataset.comingSoon || "").trim().toLowerCase() === "true") return;
 
       event.preventDefault();
       const sku = card.dataset.sku;

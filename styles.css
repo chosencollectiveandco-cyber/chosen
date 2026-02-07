@@ -472,6 +472,10 @@ body.newsletter-hidden .newsletter-toggle {
   padding: 18px 0;
 }
 
+.product-card[data-coming-soon="true"] {
+  cursor: default;
+}
+
 .product-card:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 6px;
@@ -525,6 +529,10 @@ body.newsletter-hidden .newsletter-toggle {
 
 .product-card:hover .product-tile {
   transform: translateY(-3px);
+}
+
+.product-card[data-coming-soon="true"]:hover .product-tile {
+  transform: none;
 }
 
 .product-meta {
