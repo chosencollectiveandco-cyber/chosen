@@ -11,8 +11,9 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
   </head>
-  <body>
+  <body class="cancel-page">
     <header class="site-header">
       <nav class="top-nav" aria-label="Primary">
         <div class="nav-left">
@@ -21,6 +22,33 @@
           <a href="prayer.html" class="nav-link">Prayer Request</a>
           <a href="devotion.html" class="nav-link">Devotion</a>
         </div>
+
+        <button class="cart-button" type="button" data-action="open-cart" aria-label="Open cart">
+          <svg
+            class="cart-icon"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M7 7V6a5 5 0 0 1 10 0v1"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M6 7h12l1 14H5L6 7Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="cart-count" aria-hidden="true" hidden>0</span>
+        </button>
       </nav>
     </header>
 
@@ -33,5 +61,26 @@
         </div>
       </section>
     </main>
+
+    <div class="backdrop" data-action="close-cart" hidden></div>
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
+      <div class="cart-header">
+        <h2 class="cart-title">Cart</h2>
+        <button class="icon-button" type="button" data-action="close-cart" aria-label="Close cart">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="cart-items" role="list" aria-label="Cart items"></div>
+
+      <div class="cart-footer">
+        <div class="cart-total" aria-label="Cart total">
+          <span>Total</span>
+          <span class="cart-total-value" data-cart-total>$0</span>
+        </div>
+        <button class="clear-button" type="button" data-action="clear-cart">Clear cart</button>
+        <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
+      </div>
+    </aside>
   </body>
 </html>

@@ -171,6 +171,26 @@ button:focus-visible,
   padding: 42px 0 80px;
 }
 
+.cancel-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.cancel-page .page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.cancel-page .home-hero {
+  min-height: auto;
+  padding: 0 6vw;
+}
+
 .home-inner {
   width: min(760px, 92vw);
   display: grid;
