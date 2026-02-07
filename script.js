@@ -515,6 +515,7 @@ function main() {
     if (!actionEl) {
       if (productCard && hasProductModalUi) {
         if (String(productCard.dataset.comingSoon || "").trim().toLowerCase() === "true") return;
+        if (productCard.classList.contains("is-magnifying")) return;
         const sku = productCard.dataset.sku;
         if (sku) openProductModal(sku);
       }
@@ -691,6 +692,20 @@ function initProductMagnifier() {
     const img = card.querySelector(".product-image");
     if (!tile || !img) continue;
 
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "magnify-button";
+    button.dataset.action = "magnify";
+    button.setAttribute("aria-label", "Magnify");
+    button.setAttribute("aria-pressed", "false");
+    button.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `.trim();
+    tile.appendChild(button);
+
     const lens = document.createElement("div");
     lens.className = "zoom-lens";
     lens.setAttribute("aria-hidden", "true");
@@ -718,23 +733,38 @@ function initProductMagnifier() {
       lens.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
     }
 
-    card.addEventListener("pointerenter", (event) => {
+    function setEnabled(next, event) {
+      const enabled = Boolean(next);
+      card.classList.toggle("is-magnifying", enabled);
+      button.setAttribute("aria-pressed", enabled ? "true" : "false");
+
+      if (!enabled) return;
+
       applyBackground();
-      card.classList.add("is-magnifying");
+      if (event) {
+        update(event);
+        return;
+      }
+
+      const rect = tile.getBoundingClientRect();
+      update({ clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 });
+    }
+
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setEnabled(!card.classList.contains("is-magnifying"), event);
+    });
+
+    card.addEventListener("pointerenter", (event) => {
+      if (!card.classList.contains("is-magnifying")) return;
+      applyBackground();
       update(event);
     });
 
     card.addEventListener("pointermove", (event) => {
       if (!card.classList.contains("is-magnifying")) return;
       update(event);
-    });
-
-    card.addEventListener("pointerleave", () => {
-      card.classList.remove("is-magnifying");
-    });
-
-    card.addEventListener("click", () => {
-      card.classList.remove("is-magnifying");
     });
   }
 }

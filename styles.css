@@ -607,34 +607,6 @@ body.newsletter-hidden .newsletter-toggle {
   padding: 26px;
 }
 
-.product-card:not([data-coming-soon="true"]) .product-tile::before {
-  content: "";
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  width: 46px;
-  height: 46px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--soft);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 20px 20px;
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none;
-}
-
-.product-card:not([data-coming-soon="true"]):hover .product-tile::before,
-.product-card:not([data-coming-soon="true"]):focus-visible .product-tile::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
 .zoom-lens {
   position: absolute;
   width: 160px;
@@ -651,9 +623,45 @@ body.newsletter-hidden .newsletter-toggle {
   z-index: 2;
 }
 
-.product-card.is-magnifying .zoom-lens {
+.product-card.is-magnifying:hover .zoom-lens,
+.product-card.is-magnifying:focus-within .zoom-lens {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+}
+
+.magnify-button {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid var(--soft);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.2s ease;
+}
+
+.product-card:not([data-coming-soon="true"]):hover .magnify-button,
+.product-card:not([data-coming-soon="true"]):focus-within .magnify-button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.magnify-button:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.magnify-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 
 .product-tile::after {
@@ -1237,6 +1245,7 @@ body.product-open {
   .cart-button,
   .add-button,
   .product-tile,
+  .magnify-button,
   .zoom-lens,
   .product-modal,
   .icon-button,
