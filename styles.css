@@ -95,7 +95,9 @@ button:focus-visible,
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 0;
 }
 
