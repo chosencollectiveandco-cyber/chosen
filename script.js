@@ -12,6 +12,7 @@ const PRODUCT_CATALOG = {
     price: 40,
     imageSrc: "assets/chsn-t1.jpg",
     imageSrcs: ["assets/chsn-t1.jpg", "assets/chsn-t1-2.png"],
+    comingSoon: true,
   },
   "MERCH-02": {
     sku: "MERCH-02",
@@ -388,7 +389,7 @@ function main() {
     if (modalAddButtonEl instanceof HTMLButtonElement) {
       if (product.comingSoon) {
         modalAddButtonEl.disabled = true;
-        modalAddButtonEl.textContent = "Coming soon";
+        modalAddButtonEl.textContent = "COMING SOON";
       } else {
         modalAddButtonEl.disabled = false;
         modalAddButtonEl.textContent = "Add to cart";
@@ -526,7 +527,7 @@ function main() {
     const actionEl = event.target instanceof Element ? event.target.closest("[data-action]") : null;
     if (!actionEl) {
       if (productCard && hasProductModalUi) {
-        if (String(productCard.dataset.comingSoon || "").trim().toLowerCase() === "true") return;
+        if (String(productCard.dataset.disableModal || "").trim().toLowerCase() === "true") return;
         if (productCard.classList.contains("is-magnifying")) return;
         const sku = productCard.dataset.sku;
         if (sku) openProductModal(sku);
@@ -666,7 +667,7 @@ function main() {
       if (!(target instanceof Element)) return;
       const card = target.closest(".product-card");
       if (!card || target !== card) return;
-      if (String(card.dataset.comingSoon || "").trim().toLowerCase() === "true") return;
+      if (String(card.dataset.disableModal || "").trim().toLowerCase() === "true") return;
 
       event.preventDefault();
       const sku = card.dataset.sku;
@@ -791,7 +792,7 @@ function initPageTransitions() {
 function initProductMagnifier() {
   if (!window.matchMedia?.("(hover: hover) and (pointer: fine)").matches) return;
 
-  const cards = Array.from(document.querySelectorAll('.product-card:not([data-coming-soon="true"])'));
+  const cards = Array.from(document.querySelectorAll('.product-card:not([data-disable-modal="true"])'));
   if (cards.length === 0) return;
 
   function clamp(value, min, max) {
