@@ -263,6 +263,83 @@ function renderCart({ cartItemsEl, cartTotalEl, cart }, products) {
   cartTotalEl.textContent = money.format(total);
 }
 
+function mailchimpFormToJsonpUrl(formEl) {
+  if (!(formEl instanceof HTMLFormElement)) return null;
+  if (!formEl.action) return null;
+
+  let actionUrl;
+  try {
+    actionUrl = new URL(formEl.action);
+  } catch {
+    return null;
+  }
+
+  if (!actionUrl.hostname.endsWith("list-manage.com")) return null;
+
+  actionUrl.pathname = actionUrl.pathname.replace(/\/subscribe\/post$/, "/subscribe/post-json");
+
+  const params = new URLSearchParams(actionUrl.search);
+  const formData = new FormData(formEl);
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === "string") params.set(key, value);
+  }
+
+  const callbackName = `__ccco_mc_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  params.set("c", callbackName);
+  actionUrl.search = params.toString();
+
+  return { url: actionUrl.toString(), callbackName };
+}
+
+function subscribeMailchimpJsonp({ formEl, onSuccess, onError, onDone }) {
+  const built = mailchimpFormToJsonpUrl(formEl);
+  if (!built) {
+    onError?.("Mailchimp form is not configured correctly.");
+    onDone?.();
+    return;
+  }
+
+  const { url, callbackName } = built;
+  const script = document.createElement("script");
+  script.src = url;
+  script.async = true;
+
+  const cleanup = () => {
+    delete window[callbackName];
+    script.remove();
+  };
+
+  const timeout = window.setTimeout(() => {
+    cleanup();
+    onError?.("Timed out. Please try again.");
+    onDone?.();
+  }, 15000);
+
+  window[callbackName] = (data) => {
+    window.clearTimeout(timeout);
+    cleanup();
+
+    const result = typeof data?.result === "string" ? data.result.toLowerCase() : "";
+    const msg = typeof data?.msg === "string" ? data.msg : "";
+
+    if (result === "success") {
+      onSuccess?.(msg);
+    } else {
+      onError?.(msg || "Subscription failed. Please try again.");
+    }
+    onDone?.();
+  };
+
+  script.onerror = () => {
+    window.clearTimeout(timeout);
+    cleanup();
+    onError?.("Couldn’t reach Mailchimp. Please try again.");
+    onDone?.();
+  };
+
+  document.head.appendChild(script);
+}
+
 function main() {
   initPageTransitions();
   initVerseReveal();
@@ -284,6 +361,7 @@ function main() {
   const newsletterToggleEl = document.querySelector(".newsletter-toggle");
   const newsletterFormEl = document.querySelector(".newsletter-form");
   const newsletterSuccessEl = document.querySelector("[data-newsletter-success]");
+  const newsletterErrorEl = document.querySelector("[data-newsletter-error]");
   const newsletterNameEl = document.querySelector("#newsletter-name");
   const newsletterEmailEl = document.querySelector("#newsletter-email");
 
@@ -330,6 +408,7 @@ function main() {
     document.body.classList.remove("newsletter-hidden");
     localStorage.removeItem(NEWSLETTER_RAIL_STORAGE_KEY);
     if (newsletterSuccessEl instanceof HTMLElement) newsletterSuccessEl.hidden = true;
+    if (newsletterErrorEl instanceof HTMLElement) newsletterErrorEl.hidden = true;
     if (newsletterNameEl instanceof HTMLInputElement) {
       newsletterNameEl.focus();
     } else {
@@ -345,17 +424,59 @@ function main() {
   }
 
   if (hasNewsletterRailUi && newsletterFormEl instanceof HTMLFormElement) {
-    newsletterFormEl.addEventListener("submit", () => {
-      if (newsletterSuccessEl instanceof HTMLElement) {
-        newsletterSuccessEl.hidden = false;
+    newsletterFormEl.addEventListener("submit", (event) => {
+      if (newsletterSuccessEl instanceof HTMLElement) newsletterSuccessEl.hidden = true;
+      if (newsletterErrorEl instanceof HTMLElement) newsletterErrorEl.hidden = true;
+
+      const subscribeButton = newsletterFormEl.querySelector('button[type="submit"]');
+      if (subscribeButton instanceof HTMLButtonElement) {
+        subscribeButton.disabled = true;
+        subscribeButton.dataset.originalText = subscribeButton.textContent || "";
+        subscribeButton.textContent = "Joining…";
       }
 
-      if (newsletterNameEl instanceof HTMLInputElement) newsletterNameEl.value = "";
-      if (newsletterEmailEl instanceof HTMLInputElement) newsletterEmailEl.value = "";
+      const isMailchimp = String(newsletterFormEl.dataset.mailchimp || "").toLowerCase() === "true";
+      if (!isMailchimp) return;
+      event.preventDefault();
 
-      window.setTimeout(() => {
-        hideNewsletterRail();
-      }, 800);
+      subscribeMailchimpJsonp({
+        formEl: newsletterFormEl,
+        onSuccess: () => {
+          if (newsletterSuccessEl instanceof HTMLElement) {
+            newsletterSuccessEl.hidden = false;
+            newsletterSuccessEl.textContent = "Thank you. Check your inbox to confirm your subscription.";
+          }
+          if (newsletterNameEl instanceof HTMLInputElement) newsletterNameEl.value = "";
+          if (newsletterEmailEl instanceof HTMLInputElement) newsletterEmailEl.value = "";
+          window.setTimeout(() => hideNewsletterRail(), 900);
+        },
+        onError: (rawMessage) => {
+          const cleaned = String(rawMessage || "")
+            .replace(/<[^>]*>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+          const lower = cleaned.toLowerCase();
+          const friendly =
+            lower.includes("already subscribed") || lower.includes("is already subscribed")
+              ? "You’re already on the list."
+              : cleaned || "Subscription failed. Please try again.";
+
+          if (newsletterErrorEl instanceof HTMLElement) {
+            newsletterErrorEl.hidden = false;
+            newsletterErrorEl.textContent = friendly;
+          } else {
+            alert(friendly);
+          }
+        },
+        onDone: () => {
+          if (subscribeButton instanceof HTMLButtonElement) {
+            subscribeButton.disabled = false;
+            subscribeButton.textContent = subscribeButton.dataset.originalText || "Join";
+            delete subscribeButton.dataset.originalText;
+          }
+        },
+      });
     });
   }
 
