@@ -282,6 +282,7 @@ function main() {
 
   const newsletterRailEl = document.querySelector(".newsletter-rail");
   const newsletterToggleEl = document.querySelector(".newsletter-toggle");
+  const newsletterNameEl = document.querySelector("#newsletter-name");
   const newsletterEmailEl = document.querySelector("#newsletter-email");
 
   const productModalEl = document.querySelector(".product-modal");
@@ -326,7 +327,11 @@ function main() {
     if (!hasNewsletterRailUi) return;
     document.body.classList.remove("newsletter-hidden");
     localStorage.removeItem(NEWSLETTER_RAIL_STORAGE_KEY);
-    newsletterEmailEl.focus();
+    if (newsletterNameEl instanceof HTMLInputElement) {
+      newsletterNameEl.focus();
+    } else {
+      newsletterEmailEl.focus();
+    }
   }
 
   if (hasNewsletterRailUi) {
