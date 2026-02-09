@@ -282,6 +282,8 @@ function main() {
 
   const newsletterRailEl = document.querySelector(".newsletter-rail");
   const newsletterToggleEl = document.querySelector(".newsletter-toggle");
+  const newsletterFormEl = document.querySelector(".newsletter-form");
+  const newsletterSuccessEl = document.querySelector("[data-newsletter-success]");
   const newsletterNameEl = document.querySelector("#newsletter-name");
   const newsletterEmailEl = document.querySelector("#newsletter-email");
 
@@ -327,6 +329,7 @@ function main() {
     if (!hasNewsletterRailUi) return;
     document.body.classList.remove("newsletter-hidden");
     localStorage.removeItem(NEWSLETTER_RAIL_STORAGE_KEY);
+    if (newsletterSuccessEl instanceof HTMLElement) newsletterSuccessEl.hidden = true;
     if (newsletterNameEl instanceof HTMLInputElement) {
       newsletterNameEl.focus();
     } else {
@@ -339,6 +342,21 @@ function main() {
     if (localStorage.getItem(NEWSLETTER_RAIL_STORAGE_KEY) === "1") {
       document.body.classList.add("newsletter-hidden");
     }
+  }
+
+  if (hasNewsletterRailUi && newsletterFormEl instanceof HTMLFormElement) {
+    newsletterFormEl.addEventListener("submit", () => {
+      if (newsletterSuccessEl instanceof HTMLElement) {
+        newsletterSuccessEl.hidden = false;
+      }
+
+      if (newsletterNameEl instanceof HTMLInputElement) newsletterNameEl.value = "";
+      if (newsletterEmailEl instanceof HTMLInputElement) newsletterEmailEl.value = "";
+
+      window.setTimeout(() => {
+        hideNewsletterRail();
+      }, 800);
+    });
   }
 
   let cart = hasCartUi ? sanitizeCart(loadCart(), products) : loadCart();

@@ -242,49 +242,54 @@
         <h2 class="newsletter-title">Be First</h2>
         <p class="newsletter-copy">Enter your email for first access to drops.</p>
 
-        <form
-          class="newsletter-form"
-          name="chosen-updates"
-          method="POST"
-          action="updates-success.html"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-        >
-          <input type="hidden" name="form-name" value="chosen-updates" />
-          <p class="form-hidden">
-            <label>
-              Don’t fill this out: <input name="bot-field" />
-            </label>
-          </p>
+	        <form
+	          class="newsletter-form"
+	          method="POST"
+	          action="https://chosencollectiveandco.us12.list-manage.com/subscribe/post?u=555b896e32c5a6227a19dc975&amp;id=7cbd01f19d&amp;f_id=00e4e0e1f0"
+	          target="mc-subscribe-frame"
+	        >
+	          <div aria-hidden="true" class="form-hidden">
+	            <input type="text" name="b_555b896e32c5a6227a19dc975_7cbd01f19d" tabindex="-1" value="" />
+	          </div>
 
-          <label class="newsletter-label" for="newsletter-name">Name</label>
-          <input
-            class="newsletter-input"
-            id="newsletter-name"
-            name="name"
-            type="text"
-            autocomplete="name"
-          />
+	          <label class="newsletter-label" for="newsletter-name">Name</label>
+	          <input
+	            class="newsletter-input"
+	            id="newsletter-name"
+	            name="FNAME"
+	            type="text"
+	            autocomplete="name"
+	          />
 
-          <label class="newsletter-label" for="newsletter-email">Email</label>
-          <input
-            class="newsletter-input"
-            id="newsletter-email"
-            name="email"
-            type="email"
-            autocomplete="email"
-            inputmode="email"
-            required
-          />
-          <button class="newsletter-button" type="submit">Join</button>
-        </form>
+	          <label class="newsletter-label" for="newsletter-email">Email</label>
+	          <input
+	            class="newsletter-input"
+	            id="newsletter-email"
+	            name="EMAIL"
+	            type="email"
+	            autocomplete="email"
+	            inputmode="email"
+	            required
+	          />
+	          <button class="newsletter-button" type="submit">Join</button>
+	        </form>
+	        <p class="newsletter-success" data-newsletter-success role="status" aria-live="polite" hidden>
+	          Thank you. Check your inbox to confirm your subscription.
+	        </p>
 
-        <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
-      </div>
-    </aside>
+	        <p class="newsletter-fine">No spam. Unsubscribe anytime.</p>
+	      </div>
+	    </aside>
 
-    <button class="newsletter-toggle" type="button" data-action="show-newsletter" aria-label="Open email updates">
-      Updates
-    </button>
-  </body>
-</html>
+	    <button class="newsletter-toggle" type="button" data-action="show-newsletter" aria-label="Open email updates">
+	      Updates
+	    </button>
+	    <iframe
+	      title="Mailchimp subscribe"
+	      name="mc-subscribe-frame"
+	      tabindex="-1"
+	      aria-hidden="true"
+	      style="position:absolute; left:-9999px; width:1px; height:1px; border:0;"
+	    ></iframe>
+	  </body>
+	</html>
