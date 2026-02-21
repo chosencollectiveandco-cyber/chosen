@@ -22,14 +22,15 @@
     <link rel="apple-touch-icon" href="assets/chosenlogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-    <script defer src="script.js"></script>
-  </head>
-  <body class="home-page">
+	    <link
+	      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap"
+	      rel="stylesheet"
+	    />
+	    <link rel="stylesheet" href="styles.css" />
+	    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+	    <script defer src="script.js"></script>
+	  </head>
+	  <body class="home-page">
     <header class="site-header">
       <nav class="top-nav" aria-label="Primary">
         <div class="nav-left">
@@ -79,7 +80,7 @@
     </main>
 
 	    <div class="backdrop" data-action="close-cart" hidden></div>
-    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
+	    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
       <div class="cart-header">
 	        <h2 class="cart-title">Cart</h2>
 	        <button class="icon-button" type="button" data-action="close-cart" aria-label="Close cart">
@@ -97,7 +98,29 @@
         <button class="clear-button" type="button" data-action="clear-cart">Clear cart</button>
         <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
       </div>
-    </aside>
+	    </aside>
 
-  </body>
-</html>
+	    <script>
+	      (function () {
+	        function initIdentityConfirmation() {
+	          if (!window.netlifyIdentity) return false;
+	          var raw = (window.location.hash || "") + " " + (window.location.search || "");
+	          var hasToken = /invite_token=|confirmation_token=|recovery_token=/.test(raw);
+	          if (!hasToken) return true;
+
+	          window.netlifyIdentity.on("init", function () {
+	            window.netlifyIdentity.open();
+	          });
+
+	          window.netlifyIdentity.on("login", function () {
+	            document.location.href = "/admin/";
+	          });
+	          return true;
+	        }
+
+	        if (initIdentityConfirmation()) return;
+	        window.addEventListener("load", initIdentityConfirmation);
+	      })();
+	    </script>
+	  </body>
+	</html>

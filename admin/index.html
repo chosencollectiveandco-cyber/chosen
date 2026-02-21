@@ -9,5 +9,17 @@
   <body>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script src="https://unpkg.com/decap-cms@^3.1.0/dist/decap-cms.js"></script>
+    <script>
+      (function () {
+        if (!window.netlifyIdentity) return;
+        var raw = (window.location.hash || "") + " " + (window.location.search || "");
+        var hasToken = /invite_token=|confirmation_token=|recovery_token=/.test(raw);
+        if (!hasToken) return;
+
+        window.netlifyIdentity.on("init", function () {
+          window.netlifyIdentity.open();
+        });
+      })();
+    </script>
   </body>
 </html>
