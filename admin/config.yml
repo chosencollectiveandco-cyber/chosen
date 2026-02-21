@@ -2,8 +2,8 @@ backend:
   name: git-gateway
   branch: main
 
-site_url: https://chosencollectiveandco.com
-display_url: https://chosencollectiveandco.com
+site_url: "https://chosencollectiveandco.com/"
+display_url: "https://chosencollectiveandco.com/"
 logo_url: /assets/chosenlogo.png
 
 media_folder: "assets/uploads"
