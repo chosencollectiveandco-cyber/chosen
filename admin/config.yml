@@ -2,6 +2,17 @@ backend:
   name: git-gateway
   branch: main
 
+site_url: https://chosencollectiveandco.com
+display_url: https://chosencollectiveandco.com
+logo_url: /assets/chosenlogo.png
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+media_library:
+  name: uploadcare
+  config:
+    publicKey: "demopublickey"
+
 collections:
   - name: devotions
     label: Devotions
