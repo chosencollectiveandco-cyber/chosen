@@ -340,10 +340,160 @@ function subscribeMailchimpJsonp({ formEl, onSuccess, onError, onDone }) {
   document.head.appendChild(script);
 }
 
+function initDevotionArchive() {
+  const itemsEl = document.querySelector("[data-devotion-items]");
+  const titleEl = document.querySelector("[data-devotion-title]");
+  const metaEl = document.querySelector("[data-devotion-meta]");
+  const scriptureEl = document.querySelector("[data-devotion-scripture]");
+  const bodyEl = document.querySelector("[data-devotion-body]");
+
+  const hasUi = Boolean(itemsEl && titleEl && metaEl && scriptureEl && bodyEl);
+  if (!hasUi) return null;
+
+  const state = {
+    items: [],
+    selectedId: "",
+  };
+
+  const safeText = (value) => String(value ?? "").trim();
+
+  function formatDate(dateStr) {
+    const raw = safeText(dateStr);
+    if (!raw) return "";
+    const isoLike = raw.length === 10 ? `${raw}T00:00:00` : raw;
+    const parsed = new Date(isoLike);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    return parsed.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+  }
+
+  function sortItems(items) {
+    return [...items].sort((a, b) => {
+      const ad = safeText(a.date);
+      const bd = safeText(b.date);
+      if (ad === bd) return safeText(b.title).localeCompare(safeText(a.title));
+      return bd.localeCompare(ad);
+    });
+  }
+
+  function setSelected(id, { updateHash = true } = {}) {
+    const nextId = safeText(id);
+    const selected = state.items.find((item) => safeText(item.id) === nextId) || state.items[0];
+    if (!selected) return;
+
+    state.selectedId = safeText(selected.id);
+    document.body.dataset.devotionId = state.selectedId;
+
+    titleEl.textContent = safeText(selected.title) || "Devotion";
+    metaEl.textContent = formatDate(selected.date);
+
+    const scripture = safeText(selected.scripture);
+    if (scripture) {
+      scriptureEl.hidden = false;
+      scriptureEl.textContent = scripture;
+    } else {
+      scriptureEl.hidden = true;
+      scriptureEl.textContent = "";
+    }
+
+    bodyEl.textContent = safeText(selected.body);
+
+    for (const btn of itemsEl.querySelectorAll(".devotion-archive-item")) {
+      const btnId = safeText(btn.dataset.devotionId);
+      btn.classList.toggle("is-active", Boolean(btnId && btnId === state.selectedId));
+    }
+
+    if (updateHash) {
+      const targetHash = `#${encodeURIComponent(state.selectedId)}`;
+      if (window.location.hash !== targetHash) window.location.hash = targetHash;
+    }
+  }
+
+  function renderList() {
+    itemsEl.innerHTML = "";
+    if (!state.items.length) {
+      const empty = document.createElement("p");
+      empty.className = "devotion-body";
+      empty.textContent = "No devotions yet.";
+      itemsEl.appendChild(empty);
+      return;
+    }
+
+    for (const item of state.items) {
+      const id = safeText(item.id);
+      const title = safeText(item.title) || "Devotion";
+      const date = formatDate(item.date);
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "devotion-archive-item";
+      button.dataset.devotionId = id;
+
+      const h = document.createElement("p");
+      h.className = "devotion-archive-item-title";
+      h.textContent = title;
+
+      const d = document.createElement("p");
+      d.className = "devotion-archive-item-date";
+      d.textContent = date;
+
+      button.append(h, d);
+      itemsEl.appendChild(button);
+    }
+  }
+
+  async function load() {
+    titleEl.textContent = "Loading…";
+    metaEl.textContent = "";
+    scriptureEl.hidden = true;
+    scriptureEl.textContent = "";
+    bodyEl.textContent = "";
+
+    try {
+      const res = await fetch("content/devotions.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load devotions (${res.status})`);
+      const data = await res.json();
+      const items = Array.isArray(data?.items) ? data.items : [];
+      state.items = sortItems(items).filter((item) => safeText(item?.id) && safeText(item?.title) && safeText(item?.date));
+      renderList();
+      const hashId = decodeURIComponent(String(window.location.hash || "").replace(/^#/, "")).trim();
+      setSelected(hashId, { updateHash: false });
+    } catch (error) {
+      console.error(error);
+      titleEl.textContent = "Devotion";
+      bodyEl.textContent = "Could not load devotions.";
+    }
+  }
+
+  window.addEventListener("hashchange", () => {
+    const hashId = decodeURIComponent(String(window.location.hash || "").replace(/^#/, "")).trim();
+    if (!hashId) return;
+    setSelected(hashId, { updateHash: false });
+  });
+
+  load();
+
+  return {
+    getSelectedId: () => state.selectedId,
+    copyLink: async () => {
+      const id = state.selectedId;
+      if (!id) return false;
+      const url = `${window.location.origin}${window.location.pathname}#${encodeURIComponent(id)}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  };
+}
+
 function main() {
   initPageTransitions();
   initVerseReveal();
   initNavUnderline();
+
+  const devotionArchive = initDevotionArchive();
 
   const products = getProductsFromDom();
 
@@ -667,6 +817,13 @@ function main() {
   }
 
   document.addEventListener("click", (event) => {
+    const devotionItem = event.target instanceof Element ? event.target.closest(".devotion-archive-item") : null;
+    if (devotionItem instanceof HTMLElement) {
+      const id = String(devotionItem.dataset.devotionId || "").trim();
+      if (id) window.location.hash = `#${encodeURIComponent(id)}`;
+      return;
+    }
+
     const productCard = event.target instanceof Element ? event.target.closest(".product-card") : null;
     const actionEl = event.target instanceof Element ? event.target.closest("[data-action]") : null;
     if (!actionEl) {
@@ -683,6 +840,28 @@ function main() {
     if (!action) return;
 
     if (action === "magnify" || action === "modal-magnify") {
+      return;
+    }
+
+    if (action === "copy-devotion-link") {
+      if (!devotionArchive) return;
+      const button = actionEl instanceof HTMLButtonElement ? actionEl : null;
+      const original = button ? button.textContent : "";
+      if (button) button.textContent = "Copying…";
+      devotionArchive
+        .copyLink()
+        .then((copied) => {
+          if (button) button.textContent = copied ? "Copied" : "Copy failed";
+          window.setTimeout(() => {
+            if (button) button.textContent = original || "Copy link";
+          }, 900);
+        })
+        .catch(() => {
+          if (button) button.textContent = "Copy failed";
+          window.setTimeout(() => {
+            if (button) button.textContent = original || "Copy link";
+          }, 900);
+        });
       return;
     }
 

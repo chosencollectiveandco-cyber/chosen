@@ -1,0 +1,36 @@
+backend:
+  name: git-gateway
+  branch: main
+
+collections:
+  - name: devotions
+    label: Devotions
+    files:
+      - name: archive
+        label: Devotion Archive
+        file: content/devotions.json
+        fields:
+          - label: Devotions
+            name: items
+            widget: list
+            summary: "{{fields.date}} — {{fields.title}}"
+            fields:
+              - label: ID (for links)
+                name: id
+                widget: string
+                hint: "Use something unique like: 2026-02-21-selah"
+              - label: Title
+                name: title
+                widget: string
+              - label: Date
+                name: date
+                widget: datetime
+                format: "YYYY-MM-DD"
+                time_format: false
+              - label: Scripture Reference
+                name: scripture
+                widget: string
+                required: false
+              - label: Body
+                name: body
+                widget: text

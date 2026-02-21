@@ -342,6 +342,126 @@ button:focus-visible,
   padding-top: 46px;
 }
 
+.devotion-archive {
+  width: 100%;
+}
+
+.devotion-archive-layout {
+  width: min(980px, 92vw);
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.devotion-archive-list,
+.devotion-archive-view {
+  border: 1px solid var(--soft);
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.devotion-archive-kicker {
+  margin: 0 0 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.devotion-archive-items {
+  display: grid;
+  gap: 10px;
+}
+
+.devotion-archive-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--soft);
+  background: transparent;
+  padding: 12px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.devotion-archive-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.devotion-archive-item.is-active {
+  border-color: var(--ink);
+}
+
+.devotion-archive-item-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.devotion-archive-item-date {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+
+.devotion-archive-title {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.devotion-archive-meta {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+
+.devotion-archive-scripture {
+  margin: 10px 0 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.devotion-archive-body {
+  margin-top: 14px;
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 0.84rem;
+  letter-spacing: 0.06em;
+  line-height: 1.85;
+  text-transform: none;
+  white-space: pre-wrap;
+}
+
+.devotion-archive-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.devotion-archive-link {
+  border: 1px solid var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.devotion-archive-link:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+
 .devotion-card {
   width: min(760px, 92vw);
   border: 1px solid var(--soft);
@@ -1301,6 +1421,10 @@ body.product-open {
   }
 
   .product-modal-body {
+    grid-template-columns: 1fr;
+  }
+
+  .devotion-archive-layout {
     grid-template-columns: 1fr;
   }
 

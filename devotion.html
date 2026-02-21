@@ -77,14 +77,29 @@
       </div>
     </aside>
 
-    <main class="page">
-      <section class="devotion" aria-label="Devotion">
-        <h2 class="section-title">Devotion</h2>
-        <div class="devotion-card">
-          <p class="devotion-body"> Weekly Devotions Coming Soon! :) .</p>
-        </div>
-      </section>
-    </main>
+	    <main class="page">
+	      <section class="devotion devotion-archive" aria-label="Devotion archive">
+	        <h2 class="section-title">Devotion</h2>
+	        <div class="devotion-archive-layout">
+	          <aside class="devotion-archive-list" aria-label="Devotion list">
+	            <p class="devotion-archive-kicker">Archive</p>
+	            <div class="devotion-archive-items" data-devotion-items role="list"></div>
+	          </aside>
+
+	          <article class="devotion-archive-view" aria-label="Devotion" aria-live="polite">
+	            <h3 class="devotion-archive-title" data-devotion-title>Loading…</h3>
+	            <p class="devotion-archive-meta" data-devotion-meta></p>
+	            <p class="devotion-archive-scripture" data-devotion-scripture hidden></p>
+	            <div class="devotion-archive-body" data-devotion-body></div>
+	            <div class="devotion-archive-actions">
+	              <button class="devotion-archive-link" type="button" data-action="copy-devotion-link">
+	                Copy link
+	              </button>
+	            </div>
+	          </article>
+	        </div>
+	      </section>
+	    </main>
 
     <div class="backdrop" data-action="close-cart" hidden></div>
     <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true">
