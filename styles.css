@@ -47,11 +47,7 @@ body {
 }
 
 body.home-page {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
-    url("assets/websiteBackground.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: var(--bg);
 }
 
 body.home-page .home-inner {
